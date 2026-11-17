@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a1208">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇫🇷</text></svg>">
+  <title>Lern Deutsch · Aprende alemán</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream: #F5EFE0;
+      --warm-white: #FAF7F0;
+      --ochre: #C8862A;
+      --deep-ochre: #9B6318;
+      --terracotta: #C05A3A;
+      --deep-red: #8B2E1A;
+      --night: #110E0A;
+      --charcoal: #2D2420;
+      --stone: #8C7B6B;
+      --sand: #D4C4A8;
+      --gold: #D4A844;
+      --gold-light: #F0CC70;
+      --blue-med: #2E6B8A;
+      --teal: #1B8A7A;
+      --mosaic-1: #D4A844;
+      --mosaic-2: #C05A3A;
+      --mosaic-3: #2E6B8A;
+      --mosaic-4: #1B8A7A;
+      --mosaic-5: #8B2E1A;
+      --mosaic-6: #F0CC70;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--night);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── MOSAIC CANVAS (background) ─── */
+    #mosaic-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ─── GRAIN OVERLAY ─── */
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none;
+    }
+
+    /* ─── FLOATING WORDS LAYER ─── */
+    #words-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .floating-word {
+      position: absolute;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      opacity: 0;
+      transition: opacity 1.2s ease, transform 0.3s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    /* Top badge */
+    .top-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 1.2rem;
+      border: 1px solid rgba(212,168,68,0.25);
+      border-radius: 100px;
+      background: rgba(212,168,68,0.06);
+      backdrop-filter: blur(10px);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    .badge-text {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sand);
+    }
+
+    /* Senyera */
+    .senyera {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+    .senyera span {
+      width: 28px; height: 4px;
+      border-radius: 2px;
+      transform: scaleX(0);
+      animation: stripeIn 0.4s forwards;
+    }
+    .senyera span:nth-child(3n+1) { background: #5A5A5A; }
+    .senyera span:nth-child(3n+2) { background: #DD0000; }
+    .senyera span:nth-child(3n) { background: #FFCE00; }
+    .senyera span:nth-child(1) { animation-delay: 0.6s; }
+    .senyera span:nth-child(2) { animation-delay: 0.66s; }
+    .senyera span:nth-child(3) { animation-delay: 0.72s; }
+    .senyera span:nth-child(4) { animation-delay: 0.78s; }
+    .senyera span:nth-child(5) { animation-delay: 0.84s; }
+    .senyera span:nth-child(6) { animation-delay: 0.90s; }
+    .senyera span:nth-child(7) { animation-delay: 0.96s; }
+    .senyera span:nth-child(8) { animation-delay: 1.02s; }
+    .senyera span:nth-child(9) { animation-delay: 1.08s; }
+    @keyframes stripeIn {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    /* Title */
+    .eyebrow {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--stone);
+      letter-spacing: 0.15em;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+      margin-bottom: 0.4rem;
+    }
+    .main-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: clamp(5rem, 16vw, 13rem);
+      line-height: 0.88;
+      letter-spacing: -0.03em;
+      position: relative;
+      opacity: 0;
+      animation: titleReveal 1.2s 1s forwards;
+    }
+    .main-title .letter {
+      display: inline-block;
+      background: linear-gradient(160deg, var(--cream) 0%, var(--gold-light) 40%, var(--ochre) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: letterBounce 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+      opacity: 0;
+      transform: translateY(60px) rotate(-5deg);
+    }
+    .main-title .letter.accent {
+      font-style: italic;
+      font-weight: 700;
+      background: linear-gradient(160deg, var(--gold-light) 0%, var(--terracotta) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    @keyframes letterBounce {
+      to { opacity: 1; transform: translateY(0) rotate(0deg); }
+    }
+    @keyframes titleReveal {
+      to { opacity: 1; }
+    }
+
+    /* Animated underline */
+    .title-underline {
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #5A5A5A, #DD0000, #FFCE00);
+      margin: 0.8rem auto 0;
+      border-radius: 2px;
+      animation: lineGrow 1s 1.8s cubic-bezier(.25,.46,.45,.94) forwards;
+    }
+    @keyframes lineGrow {
+      to { width: min(280px, 60vw); }
+    }
+
+    .subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--sand);
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 2s forwards;
+    }
+
+    /* Description */
+    .desc {
+      font-size: clamp(0.88rem, 1.8vw, 1rem);
+      color: var(--stone);
+      max-width: 460px;
+      line-height: 1.9;
+      margin: 2.5rem auto;
+      opacity: 0;
+      animation: fadeUp 0.8s 2.2s forwards;
+    }
+    .desc strong {
+      color: var(--cream);
+      font-weight: 500;
+    }
+
+    /* CTA */
+    .cta-group {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 2.4s forwards;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .cta-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem 2.4rem;
+      background: linear-gradient(135deg, var(--gold), var(--ochre));
+      border: none;
+      color: var(--night);
+      text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border-radius: 60px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 30px rgba(212,168,68,0.25);
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 40px rgba(212,168,68,0.4);
+    }
+    .cta-btn:active { transform: scale(0.97); }
+    .cta-btn .arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 50%;
+      transition: transform 0.3s;
+      font-size: 0.9rem;
+    }
+    .cta-btn:hover .arrow { transform: translateX(3px); }
+
+    .cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 1.8rem;
+      background: transparent;
+      border: 1.5px solid rgba(212,168,68,0.3);
+      color: var(--gold);
+      text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .cta-secondary:hover {
+      border-color: var(--gold);
+      background: rgba(212,168,68,0.08);
+    }
+
+    /* ─── FEATURE CARDS ─── */
+    .features {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1px;
+      max-width: 750px;
+      margin: 3.5rem auto 0;
+      opacity: 0;
+      animation: fadeUp 0.8s 2.6s forwards;
+    }
+    .feat-card {
+      position: relative;
+      padding: 1.4rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.04);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(.25,.46,.45,.94);
+      overflow: hidden;
+    }
+    .feat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(212,168,68,0.08), rgba(192,90,58,0.06));
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .feat-card:hover::before { opacity: 1; }
+    .feat-card:hover {
+      border-color: rgba(212,168,68,0.2);
+      transform: translateY(-4px);
+    }
+    .feat-icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.6rem;
+      display: block;
+      transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+    }
+    .feat-card:hover .feat-icon { transform: scale(1.2) rotate(-5deg); }
+    .feat-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--stone);
+      transition: color 0.3s;
+      position: relative;
+    }
+    .feat-card:hover .feat-label { color: var(--cream); }
+
+    /* ─── STATS ROW ─── */
+    .stats-row {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 4rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 2.8s forwards;
+      flex-wrap: wrap;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold-light), var(--ochre));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-top: 0.2rem;
+    }
+
+    /* ─── BOTTOM SCROLL ─── */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 3s forwards;
+      z-index: 10;
+    }
+    .scroll-text {
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+    .scroll-arrow {
+      width: 1px;
+      height: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .scroll-arrow::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, var(--gold));
+      animation: scrollDown 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollDown {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    /* ─── MARQUEE ─── */
+    .marquee-wrap {
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+      padding: 2.5rem 0;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      margin-top: 2rem;
+    }
+    .marquee {
+      display: flex;
+      gap: 3rem;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    .marquee-item {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--stone);
+      white-space: nowrap;
+      opacity: 0.5;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    .marquee-item::after {
+      content: '◆';
+      font-size: 0.4rem;
+      color: var(--gold);
+      opacity: 0.6;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ─── ABOUT SECTION ─── */
+    .about-section {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .about-visual {
+      position: relative;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mosaic-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      width: 100%;
+      max-width: 240px;
+      transform: rotate(-3deg);
+    }
+    .mosaic-tile {
+      aspect-ratio: 1;
+      border-radius: 3px;
+      opacity: 0;
+      transform: scale(0);
+      animation: tileIn 0.4s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    @keyframes tileIn {
+      to { opacity: 1; transform: scale(1); }
+    }
+    .about-content {
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+    .about-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(135deg, var(--cream), var(--gold-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .about-text {
+      font-size: 0.92rem;
+      color: var(--stone);
+      line-height: 1.9;
+      margin-bottom: 1.5rem;
+    }
+    .about-text strong {
+      color: var(--cream);
+      font-weight: 500;
+    }
+
+    /* ─── PHRASE CARD ─── */
+    .phrase-card {
+      position: relative;
+      z-index: 10;
+      max-width: 600px;
+      margin: 0 auto 5rem;
+      padding: 2.5rem 3rem;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(212,168,68,0.12);
+      border-radius: 2px;
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+    }
+    .phrase-tag {
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+    .phrase-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 700;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.5;
+      margin-bottom: 0.8rem;
+    }
+    .phrase-translation {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--stone);
+    }
+    .phrase-btn {
+      margin-top: 1.5rem;
+      padding: 0.5rem 1.4rem;
+      background: transparent;
+      border: 1px solid rgba(212,168,68,0.2);
+      color: var(--gold);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .phrase-btn:hover {
+      background: rgba(212,168,68,0.1);
+      border-color: var(--gold);
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .footer-senyera {
+      display: flex;
+      gap: 3px;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .footer-senyera span {
+      width: 18px; height: 3px;
+      border-radius: 1px;
+    }
+    .footer-senyera span:nth-child(3n+1) { background: #2E5EAA; opacity: 0.5; }
+    .footer-senyera span:nth-child(3n+2) { background: #F5EFE0; opacity: 0.5; }
+    .footer-senyera span:nth-child(3n) { background: #C8323C; opacity: 0.5; }
+    .footer-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--stone);
+    }
+
+    /* ─── KEYFRAMES ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 700px) {
+      .about-section {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 4rem 1.5rem;
+      }
+      .about-visual { max-width: 200px; margin: 0 auto; }
+      .stats-row { gap: 2rem; }
+      .phrase-card { margin: 0 1rem 4rem; padding: 2rem 1.5rem; }
+      .features { gap: 0; margin: 3rem 1rem 0; }
+    }
+    html, body { overflow-x: hidden; }
+    @media (max-width: 600px) {
+      .features { grid-template-columns: repeat(3, 1fr); margin: 3rem 1rem 0; max-width: calc(100% - 2rem); }
+      .feat-card { min-width: 0; padding-left: 0.3rem; padding-right: 0.3rem; }
+      .scroll-indicator { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background -->
+  <canvas id="mosaic-canvas"></canvas>
+  <div class="grain"></div>
+
+  <!-- Floating words -->
+  <div id="words-layer"></div>
+
+  <!-- ═══════ HERO ═══════ -->
+  <main class="hero">
+    <div class="top-badge">
+      <span class="badge-dot"></span>
+      <span class="badge-text">Sprache &amp; Kultur</span>
+    </div>
+
+    <div class="senyera">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <p class="eyebrow">Bienvenido al mundo del</p>
+
+    <h1 class="main-title" id="mainTitle"></h1>
+    <div class="title-underline"></div>
+
+    <p class="subtitle">La lengua de Goethe… y de más de 130 millones de personas</p>
+
+    <p class="desc">
+      Empieza desde cero con 10 lecciones, paso a paso.<br/>
+      <strong>Vocabulario, gramática y audio</strong>, con la traducción<br/>
+      al español debajo de cada pregunta.
+    </p>
+
+    <div class="cta-group">
+      <a href="exercices.html" class="cta-btn">
+        Empezar los ejercicios
+        <span class="arrow">→</span>
+      </a>
+      <a href="#about" class="cta-secondary">Saber más ↓</a>
+    </div>
+
+    <div class="features">
+      <div class="feat-card">
+        <span class="feat-icon">📗</span>
+        <span class="feat-label">Lecciones</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🎧</span>
+        <span class="feat-label">Escuchar</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">✍️</span>
+        <span class="feat-label">Gramática</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">💬</span>
+        <span class="feat-label">Vocabulario</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🔢</span>
+        <span class="feat-label">Números</span>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num" data-target="10">0</div>
+        <div class="stat-label">Lecciones</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="10">0</div>
+        <div class="stat-label">Audios</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="71">0</div>
+        <div class="stat-label">Ejercicios</div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span class="scroll-text">Explorar</span>
+      <span class="scroll-arrow"></span>
+    </div>
+  </main>
+
+  <!-- ═══════ MARQUEE ═══════ -->
+  <div class="marquee-wrap">
+    <div class="marquee" id="marquee">
+      <span class="marquee-item">Hallo</span>
+      <span class="marquee-item">Danke</span>
+      <span class="marquee-item">Bitte</span>
+      <span class="marquee-item">Guten Morgen</span>
+      <span class="marquee-item">Wie geht’s?</span>
+      <span class="marquee-item">Tschüss</span>
+      <span class="marquee-item">Gern geschehen</span>
+      <span class="marquee-item">Gute Nacht</span>
+      <span class="marquee-item">Entschuldigung</span>
+      <span class="marquee-item">Freut mich</span>
+      <span class="marquee-item">Hallo</span>
+      <span class="marquee-item">Danke</span>
+      <span class="marquee-item">Bitte</span>
+      <span class="marquee-item">Guten Morgen</span>
+      <span class="marquee-item">Wie geht’s?</span>
+      <span class="marquee-item">Tschüss</span>
+      <span class="marquee-item">Gern geschehen</span>
+      <span class="marquee-item">Gute Nacht</span>
+      <span class="marquee-item">Entschuldigung</span>
+      <span class="marquee-item">Freut mich</span>
+    </div>
+  </div>
+
+  <!-- ═══════ ABOUT ═══════ -->
+  <section class="about-section" id="about">
+    <div class="about-visual">
+      <div class="mosaic-grid" id="mosaicGrid"></div>
+    </div>
+    <div class="about-content">
+      <h2 class="about-title">Aprender practicando.</h2>
+      <p class="about-text">
+        El alemán es la lengua materna de <strong>más de 90 millones de personas</strong> y la más hablada de la Unión Europea: en Alemania, Austria, Suiza, Liechtenstein, Luxemburgo…
+      </p>
+      <p class="about-text">
+        Esta app sigue el mismo camino que tus libros de inglés, catalán y francés, con <strong>ejercicios interactivos</strong>: vocabulario, gramática y audio. Ves tu progreso lección a lección.
+      </p>
+      <a href="exercices.html" class="cta-btn" style="font-size:0.75rem; padding:0.8rem 2rem;">
+        Empezar ahora <span class="arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════ PHRASE OF THE DAY ═══════ -->
+  <div class="phrase-card" id="phraseCard">
+    <div class="phrase-tag">Frase del día</div>
+    <div class="phrase-text" id="phraseText"></div>
+    <div class="phrase-translation" id="phraseTrans"></div>
+    <button class="phrase-btn" id="phraseBtn">Otra frase ↻</button>
+  </div>
+
+  <!-- ═══════ FOOTER ═══════ -->
+  <footer class="footer">
+    <div class="footer-senyera">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <p class="footer-text">Hecho con cariño para aprender alemán</p>
+  </footer>
+
+  <script>
+    // ─── LETTER-BY-LETTER TITLE ───
+    (function() {
+      const title = document.getElementById('mainTitle');
+      const word = 'Deutsch';
+      const accentStart = 4; // 'sch'
+      word.split('').forEach((ch, i) => {
+        const span = document.createElement('span');
+        span.className = 'letter' + (i >= accentStart ? ' accent' : '');
+        span.textContent = ch;
+        span.style.animationDelay = (1.1 + i * 0.09) + 's';
+        title.appendChild(span);
+      });
+    })();
+
+    // ─── MOSAIC BACKGROUND CANVAS ───
+    (function() {
+      const canvas = document.getElementById('mosaic-canvas');
+      const ctx = canvas.getContext('2d');
+      let w, h;
+      const colors = ['#DD0000','#FFCE00','#5A5A5A','#F5EFE0','#8B1E26','#D4A844','#3A3A3A'];
+      let tiles = [];
+      let mouse = { x: -1000, y: -1000 };
+
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        createTiles();
+      }
+
+      function createTiles() {
+        tiles = [];
+        const size = 60;
+        for (let x = 0; x < w + size; x += size) {
+          for (let y = 0; y < h + size; y += size) {
+            if (Math.random() > 0.65) {
+              tiles.push({
+                x, y, size: size - 2,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                baseAlpha: Math.random() * 0.04 + 0.01,
+                alpha: 0,
+                targetAlpha: 0,
+                rotation: (Math.random() - 0.5) * 0.1
+              });
+            }
+          }
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        tiles.forEach(t => {
+          const dx = mouse.x - (t.x + t.size / 2);
+          const dy = mouse.y - (t.y + t.size / 2);
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const proximity = Math.max(0, 1 - dist / 250);
+          t.targetAlpha = t.baseAlpha + proximity * 0.12;
+          t.alpha += (t.targetAlpha - t.alpha) * 0.06;
+
+          ctx.save();
+          ctx.translate(t.x + t.size / 2, t.y + t.size / 2);
+          ctx.rotate(t.rotation);
+          ctx.globalAlpha = t.alpha;
+          ctx.fillStyle = t.color;
+          ctx.beginPath();
+          ctx.roundRect(-t.size / 2, -t.size / 2, t.size, t.size, 3);
+          ctx.fill();
+          ctx.restore();
+        });
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+      resize();
+      draw();
+    })();
+
+    // ─── FLOATING GERMAN WORDS ───
+    (function() {
+      const layer = document.getElementById('words-layer');
+      const words = [
+        'Licht','Erde','Meer','Himmel','Leben','Liebe','Herz','Feuer','Wind','Regen',
+        'Sonne','Mond','Baum','Weg','Fluss','Stein','Blume','Wolke','Stern','Schatten',
+        'Haus','Tür','Fenster','Garten','Berg','Wald','Strand','Insel','Brücke','Brunnen'
+      ];
+      const colors = ['#FFCE00','#DD0000','#D4A844','#F5EFE0','#8C7B6B','#F0CC70'];
+      const active = [];
+
+      function spawn() {
+        if (active.length > 15) return;
+        const el = document.createElement('div');
+        el.className = 'floating-word';
+        el.textContent = words[Math.floor(Math.random() * words.length)];
+        const size = 14 + Math.random() * 28;
+        el.style.fontSize = size + 'px';
+        el.style.color = colors[Math.floor(Math.random() * colors.length)];
+        el.style.left = (Math.random() * 100) + '%';
+        el.style.top = (Math.random() * 100) + '%';
+        layer.appendChild(el);
+
+        requestAnimationFrame(() => { el.style.opacity = (0.06 + Math.random() * 0.12).toString(); });
+
+        const obj = { el, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, life: 8000 + Math.random() * 12000 };
+        active.push(obj);
+
+        setTimeout(() => {
+          el.style.opacity = '0';
+          setTimeout(() => {
+            el.remove();
+            const idx = active.indexOf(obj);
+            if (idx > -1) active.splice(idx, 1);
+          }, 1200);
+        }, obj.life);
+      }
+
+      function move() {
+        active.forEach(w => {
+          const rect = w.el.getBoundingClientRect();
+          w.el.style.left = (parseFloat(w.el.style.left) || 0) + w.vx * 0.05 + '%';
+          w.el.style.top = (parseFloat(w.el.style.top) || 0) + w.vy * 0.05 + '%';
+        });
+        requestAnimationFrame(move);
+      }
+
+      setInterval(spawn, 1800);
+      spawn(); spawn(); spawn();
+      move();
+    })();
+
+    // ─── MOSAIC GRID (about section) ───
+    (function() {
+      const grid = document.getElementById('mosaicGrid');
+      const colors = ['#DD0000','#FFCE00','#5A5A5A','#F5EFE0','#8B1E26','#D4A844','#3A3A3A','#C8862A'];
+      for (let i = 0; i < 16; i++) {
+        const tile = document.createElement('div');
+        tile.className = 'mosaic-tile';
+        tile.style.background = colors[i % colors.length];
+        tile.style.opacity = (0.5 + Math.random() * 0.5).toString();
+        tile.style.animationDelay = (0.05 * i) + 's';
+        grid.appendChild(tile);
+      }
+    })();
+
+    // ─── COUNT-UP STATS ───
+    (function() {
+      const nums = document.querySelectorAll('.stat-num');
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseInt(el.dataset.target);
+            let current = 0;
+            const step = Math.max(1, Math.floor(target / 40));
+            const interval = setInterval(() => {
+              current += step;
+              if (current >= target) { current = target; clearInterval(interval); }
+              el.textContent = current + '+';
+            }, 35);
+            observer.unobserve(el);
+          }
+        });
+      }, { threshold: 0.5 });
+      nums.forEach(n => observer.observe(n));
+    })();
+
+    // ─── PHRASE OF THE DAY ───
+    (function() {
+      const phrases = [
+        { ca: "Übung macht den Meister.", es: "La práctica hace al maestro." },
+        { ca: "Besser spät als nie.", es: "Más vale tarde que nunca." },
+        { ca: "Es ist nicht alles Gold, was glänzt.", es: "No todo lo que reluce es oro." },
+        { ca: "Wer nicht wagt, der nicht gewinnt.", es: "Quien no arriesga, no gana." },
+        { ca: "Aller Anfang ist schwer.", es: "Todo comienzo es difícil." },
+        { ca: "Morgenstund hat Gold im Mund.", es: "A quien madruga, Dios le ayuda." },
+        { ca: "Wo ein Wille ist, ist auch ein Weg.", es: "Querer es poder." },
+        { ca: "Ende gut, alles gut.", es: "Bien está lo que bien acaba." },
+        { ca: "Ich verstehe nur Bahnhof.", es: "No entiendo nada (literalmente: solo entiendo «estación»)." },
+        { ca: "Das ist nicht mein Bier.", es: "No es asunto mío (literalmente: no es mi cerveza)." },
+        { ca: "Tomaten auf den Augen haben.", es: "No ver lo evidente (tener tomates en los ojos)." },
+        { ca: "Da steppt der Bär!", es: "¡Allí hay mucha fiesta!" },
+        { ca: "Alles hat ein Ende, nur die Wurst hat zwei.", es: "Todo tiene un final, solo la salchicha tiene dos." },
+        { ca: "Schritt für Schritt.", es: "Paso a paso." },
+      ];
+      const textEl = document.getElementById('phraseText');
+      const transEl = document.getElementById('phraseTrans');
+      const btn = document.getElementById('phraseBtn');
+      let last = -1;
+
+      function show() {
+        let idx;
+        do { idx = Math.floor(Math.random() * phrases.length); } while (idx === last);
+        last = idx;
+        const p = phrases[idx];
+        textEl.style.opacity = '0';
+        transEl.style.opacity = '0';
+        setTimeout(() => {
+          textEl.textContent = '«' + p.ca + '»';
+          transEl.textContent = p.es;
+          textEl.style.opacity = '1';
+          transEl.style.opacity = '1';
+        }, 300);
+      }
+
+      textEl.style.transition = 'opacity 0.3s';
+      transEl.style.transition = 'opacity 0.3s';
+      show();
+      btn.addEventListener('click', show);
+    })();
+
+    // ─── SMOOTH REVEAL ON SCROLL ───
+    (function() {
+      const sections = document.querySelectorAll('.about-section, .phrase-card');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.style.opacity = '1';
+            e.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.15 });
+      sections.forEach(s => {
+        s.style.opacity = '0';
+        s.style.transform = 'translateY(30px)';
+        s.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        obs.observe(s);
+      });
+    })();
+
+    // ─── INTERACTIVE TILT ON FEATURE CARDS ───
+    document.querySelectorAll('.feat-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `translateY(-4px) perspective(400px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1208">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇫🇷</text></svg>">
+<title>Lern Deutsch · Aprende alemán</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --dark: #1a1208;
+    --dark2: #2b1f0a;
+    --mid: #3d2e10;
+    --cream: #f7f0e0;
+    --cream2: #ede4cc;
+    --red: #c0392b;
+    --green: #27ae60;
+    --shadow: 0 8px 32px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--cream);
+    min-height: 100vh;
+    background-image: 
+      radial-gradient(ellipse at 20% 20%, #3d2e1040 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, #c9a84c15 0%, transparent 60%);
+  }
+
+  header {
+    position: relative;
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+    border-bottom: 1px solid #c9a84c30;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 3.5rem);
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+  }
+
+  header p {
+    color: #a89060;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+    font-weight: 300;
+  }
+
+  /* SCORE BAR */
+  .scorebar {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #a89060;
+  }
+
+  .scorebar span { color: var(--gold); font-weight: 500; font-size: 1.1rem; }
+
+  /* TABS */
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    flex-wrap: wrap;
+  }
+
+  nav button {
+    background: var(--dark2);
+    border: 1px solid #c9a84c40;
+    color: #a89060;
+    padding: 0.55rem 1.2rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    transition: all 0.2s;
+  }
+
+  nav button.active, nav button:hover {
+    background: var(--gold);
+    color: var(--dark);
+    border-color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* MAIN CARD */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 3rem;
+  }
+
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+  .card {
+    background: var(--dark2);
+    border: 1px solid #c9a84c25;
+    border-radius: 1.2rem;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .exercise-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .exercise-question {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--cream);
+    margin-bottom: 1.2rem;
+    line-height: 1.3;
+  }
+
+  .exercise-hint {
+    font-size: 0.82rem;
+    color: #7a6840;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    background: var(--dark);
+    border: 1.5px solid #c9a84c40;
+    border-radius: 0.6rem;
+    padding: 0.85rem 1.1rem;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input[type="text"]:focus { border-color: var(--gold); }
+  input[type="text"].correct { border-color: var(--green); background: #1a3320; }
+  input[type="text"].wrong { border-color: var(--red); background: #2e1010; }
+
+  .gap-sentence {
+    font-size: 1.15rem;
+    line-height: 2.2;
+    color: var(--cream);
+    margin-bottom: 1rem;
+  }
+
+  .gap-sentence input {
+    width: auto;
+    min-width: 120px;
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    font-size: 1rem;
+  }
+
+  /* BUTTONS */
+  .btn {
+    background: var(--gold);
+    color: var(--dark);
+    border: none;
+    padding: 0.7rem 1.8rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    margin-top: 1rem;
+  }
+
+  .btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    margin-left: 0.8rem;
+  }
+
+  .btn-secondary:hover { background: var(--gold); color: var(--dark); }
+
+  /* FEEDBACK */
+  .feedback {
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    border-radius: 0.6rem;
+    font-size: 0.92rem;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.correct { background: #1a3320; border: 1px solid var(--green); color: #5dde90; }
+  .feedback.wrong { background: #2e1010; border: 1px solid var(--red); color: #e87070; }
+
+  /* PROGRESS */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--mid);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-text { font-size: 0.8rem; color: #7a6840; white-space: nowrap; }
+
+  /* VERB TABLE */
+  .verb-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+  }
+
+  .verb-table td, .verb-table th {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #c9a84c15;
+    font-size: 0.95rem;
+  }
+
+  .verb-table th {
+    color: var(--gold);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 400;
+    text-align: left;
+  }
+
+  .verb-table td:first-child { color: #a89060; width: 80px; }
+
+  .verb-table input {
+    width: 100%;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.95rem;
+  }
+
+  /* MULTI CHOICE */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .option-btn {
+    background: var(--dark);
+    border: 1.5px solid #c9a84c30;
+    color: var(--cream);
+    padding: 0.8rem 1rem;
+    border-radius: 0.7rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    text-align: left;
+    transition: all 0.2s;
+  }
+
+  .option-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .option-btn.correct { background: #1a3320; border-color: var(--green); color: #5dde90; }
+  .option-btn.wrong { background: #2e1010; border-color: var(--red); color: #e87070; }
+  .option-btn.reveal { border-color: var(--green); color: var(--green); }
+
+  /* FLASH CARD */
+  .flashcard {
+    perspective: 1000px;
+    height: 200px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+
+  .flashcard-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+  }
+
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+
+  .flashcard-front, .flashcard-back {
+    position: absolute;
+    inset: 0;
+    background: var(--mid);
+    border: 1px solid #c9a84c30;
+    border-radius: 1rem;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .flashcard-back { transform: rotateY(180deg); background: #2d1f05; }
+
+  .flashcard-front .lang { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold); margin-bottom: 0.8rem; }
+  .flashcard-front .word { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--cream); }
+  .flashcard-back .word { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); }
+  .flashcard-back .hint { font-size: 0.85rem; color: #a89060; margin-top: 0.5rem; }
+
+  /* RESULTS */
+  .results-section {
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .big-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    color: var(--gold);
+  }
+
+  @media (max-width: 500px) {
+    .options-grid { grid-template-columns: 1fr; }
+    nav button { font-size: 0.8rem; padding: 0.5rem 0.9rem; }
+    .exercise-question { font-size: 1.2rem; }
+  }
+
+  /* ===== LLIBRE (exercicis del llibre) ===== */
+  .lb-intro { font-size: 0.85rem; color: #a89060; margin-bottom: 1rem; line-height: 1.5; }
+  .lb-tools { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .lb-search { flex: 1 1 200px; min-width: 0; font-size: 15px; padding: 0.6rem 0.9rem; border-radius: 0.6rem; border: 1.5px solid #c9a84c40; background: var(--dark); color: var(--cream); font-family: inherit; outline: none; }
+  .lb-search:focus { border-color: var(--gold); }
+  .lb-filters, .lb-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .lb-filter, .lb-chip { font-size: 0.8rem; padding: 0.35rem 0.8rem; border-radius: 2rem; border: 1px solid #c9a84c40; background: var(--dark2); color: #a89060; cursor: pointer; font-family: inherit; }
+  .lb-filter.on, .lb-chip.on { background: var(--gold); border-color: var(--gold); color: var(--dark); font-weight: 500; }
+  .lb-chips { margin: 0.6rem 0 0.4rem; }
+  .lb-chip-n { opacity: .7; margin-left: 2px; }
+  .lb-index { margin-bottom: 1rem; }
+  .lb-idx-group { font-size: 0.75rem; letter-spacing: .12em; color: var(--gold); margin: 16px 0 6px; text-transform: uppercase; }
+  .lb-idx-lesson { background: var(--dark2); border: 1px solid #c9a84c25; border-radius: 0.8rem; margin-bottom: 6px; }
+  .lb-sum { list-style: none; cursor: pointer; padding: 10px 12px; display: flex; gap: 8px; align-items: baseline; }
+  .lb-sum::-webkit-details-marker { display: none; }
+  details.lb-idx-lesson > .lb-sum::before { content: '▸'; color: #a89060; }
+  details.lb-idx-lesson[open] > .lb-sum::before { content: '▾'; }
+  .lb-soon { opacity: .45; } .lb-soon .lb-sum { cursor: default; padding-left: 26px; }
+  .lb-idx-id { font-weight: 700; color: var(--gold); min-width: 1.4em; }
+  .lb-idx-name { flex: 1; font-size: 0.92rem; color: var(--cream); }
+  .lb-idx-theme { font-size: 0.75rem; color: #a89060; margin-left: 4px; }
+  .lb-idx-prog { font-size: 0.75rem; color: #a89060; white-space: nowrap; }
+  .lb-idx-desc { font-size: 0.82rem; color: #b8a478; padding: 0 12px 8px 30px; line-height: 1.45; }
+  .lb-idx-open { margin: 0 12px 8px 30px !important; }
+  .lb-idx-ex { display: block; width: 100%; text-align: left; background: none; border: none; border-top: 1px solid #c9a84c20; padding: 8px 12px 8px 30px; cursor: pointer; font-family: inherit; color: var(--cream); }
+  .lb-idx-ex:hover { background: #3d2e1060; }
+  .lb-idx-ex-t { font-size: 0.9rem; font-weight: 500; }
+  .lb-idx-ex-i { font-size: 0.75rem; color: #a89060; margin-top: 2px; }
+  .lb-tag { display: inline-block; font-size: 0.68rem; padding: 1px 7px; border-radius: 2rem; background: #c9a84c25; color: var(--gold-light); margin-left: 6px; vertical-align: 1px; }
+  .lb-res-head { font-size: 0.82rem; color: #a89060; margin: 4px 0 8px; }
+  .lb-lesson-head { margin: 1rem 0; }
+  .lb-lesson-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--cream); }
+  .lb-lesson-sub { font-size: 0.75rem; color: var(--gold); letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+  .lb-lesson-goal { font-size: 0.85rem; color: #b8a478; font-style: italic; margin-top: 4px; }
+  .lb-print-link { margin-left: 14px; }
+  #lbPrintFab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 9999; display: none; align-items: center; gap: 6px; padding: 12px 18px; background: var(--gold); color: var(--dark); border: none; border-radius: 999px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; box-shadow: 0 4px 14px rgba(0,0,0,0.35); cursor: pointer; }
+  body.lb-on #lbPrintFab { display: flex; }
+  .lb-back { background: none; border: none; color: var(--gold); font-size: 0.82rem; cursor: pointer; padding: 0; margin-top: 6px; font-family: inherit; }
+  .lb-card { background: var(--dark2); border: 1px solid #c9a84c25; border-radius: 1rem; padding: 1rem 1.1rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+  .lb-card.lb-flash { outline: 2px solid var(--gold); }
+  .lb-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .lb-card-title { font-size: 0.95rem; font-weight: 500; color: var(--gold); }
+  .lb-score { font-size: 0.75rem; color: #a89060; white-space: nowrap; }
+  .lb-score.done { color: #4ade80; }
+  .lb-instr { font-size: 0.8rem; color: #a89060; margin: 4px 0 8px; font-style: italic; }
+  .lb-item { padding: 8px 0; border-top: 1px solid #c9a84c18; font-size: 0.98rem; color: var(--cream); line-height: 1.9; }
+  .lb-item:first-of-type { border-top: none; }
+  .lb-q { margin-right: 6px; }
+  .lb-opts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .lb-opt { background: var(--dark); color: var(--cream); border: 1px solid #c9a84c40; border-radius: 0.5rem; font-size: 0.9rem; padding: 0.4rem 0.7rem; cursor: pointer; font-family: inherit; }
+  .lb-opt:hover:not(:disabled) { border-color: var(--gold); }
+  .lb-opt:disabled { cursor: default; }
+  .lb-opt:disabled:not(.ok):not(.bad) { opacity: .45; }
+  .lb-opt.ok, .lb-gap.ok { background: #1a3320; border-color: var(--green); color: #c8f7d4; }
+  .lb-opt.bad, .lb-gap.bad { background: #2e1010; border-color: var(--red); color: #f5c4c0; }
+  .lb-opt.bad { text-decoration: line-through; }
+  .lb-gap { font-size: 0.95rem; padding: 2px 6px; border: 1.5px solid #c9a84c40; border-radius: 0.4rem; background: var(--dark); color: var(--cream); font-family: inherit; max-width: 100%; outline: none; }
+  .lb-gap:focus { border-color: var(--gold); }
+  .lb-fix { color: #4ade80; font-size: 0.82rem; margin-left: 6px; }
+  .lb-qes { display: block; font-size: 0.85rem; color: #a89060; font-style: italic; margin-top: 3px; }
+  .lb-say { background: #c9a84c25; color: var(--gold-light); border: none; border-radius: 0.4rem; padding: 2px 8px; font-size: 0.9rem; margin-right: 6px; cursor: pointer; }
+  .lb-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .lb-btn { padding: 0.45rem 1rem; border-radius: 2rem; border: 1px solid var(--gold); background: transparent; color: var(--gold); font-size: 0.82rem; font-weight: 500; cursor: pointer; font-family: inherit; }
+  .lb-btn.lb-primary { background: var(--gold); color: var(--dark); }
+  @media (max-width: 500px) { .lb-card { padding: 0.9rem; } .lb-idx-desc, .lb-idx-ex { padding-left: 14px; } .lb-idx-open { margin-left: 14px !important; } }
+
+    /* ===== IMPRESSIÓ: fons blanc, sense tallar els exercicis ===== */
+    @media print {
+      @page { size: A4; margin: 12mm; }
+      html, body { background: #fff !important; background-image: none !important; padding: 0 !important; margin: 0 !important; min-height: 0 !important; }
+      body * { color: #111 !important; box-shadow: none !important; text-shadow: none !important; animation: none !important; transition: none !important; }
+      #lbPrintFab, .lb-print-link, nav, .scorebar, .print-btn-wrap, .lb-tools, .lb-filters, .lb-index, .lb-chips, .lb-actions, .lb-back, .lb-say, .lb-intro, header .subtitle-none { display: none !important; }
+      .card, .lb-card {
+        background: #fff !important; border: 1px solid #999 !important; border-radius: 6px !important;
+        break-inside: avoid; page-break-inside: avoid; margin: 0 0 10px !important; padding: 10px 12px !important;
+      }
+      .lb-item { break-inside: avoid; page-break-inside: avoid; border-top: 1px solid #ddd !important; line-height: 1.7 !important; }
+      .lb-card-head, .lb-instr, .exercise-label { break-after: avoid; page-break-after: avoid; }
+      .lb-opt {
+        display: inline-block !important; background: #fff !important; border: 1px solid #888 !important;
+        border-radius: 4px !important; padding: 2px 8px !important; margin: 2px 3px 2px 0 !important; font-size: 11pt !important; opacity: 1 !important;
+      }
+      .lb-opt.ok, .lb-gap.ok { background: #e3f6e8 !important; border-color: #2e7d32 !important; }
+      .lb-opt.bad, .lb-gap.bad { background: #fdecea !important; border-color: #c62828 !important; }
+      .lb-gap {
+        display: inline-block !important; background: #fff !important; border: none !important; border-bottom: 1px solid #333 !important;
+        border-radius: 0 !important; min-width: 90px; font-size: 11pt !important; -webkit-appearance: none; appearance: none;
+      }
+      .lb-lesson-head { break-after: avoid; page-break-after: avoid; margin: 0 0 8px !important; }
+      .lb-qes { color: #666 !important; font-size: 9.5pt !important; line-height: 1.3 !important; }
+    }
+</style>
+
+</head>
+<body class="lb-on">
+
+<header>
+  <a href="index.html" style="position:absolute;left:14px;top:14px;color:#a89060;text-decoration:none;font-size:0.85rem;">← Inicio</a>
+  <h1>Lern Deutsch</h1>
+  <p>Aprende alemán desde cero · nivel A1 · para hispanohablantes</p>
+</header>
+
+<main>
+<button id="lbPrintFab" type="button" onclick="lbPrint()" aria-label="Imprimir">🖨️ Imprimir</button>
+
+<div id="tab-livre" class="section active">
+  <div class="exercise-label">📗 Lecciones · Lektionen</div>
+  <p class="lb-intro">10 lecciones para empezar alemán desde cero. Busca lo que quieres practicar, abre el índice o elige una lección. Debajo de cada pregunta tienes la traducción al español. 🔊 lee en voz alta en alemán.</p>
+  <div class="lb-tools">
+    <input id="lbSearch" class="lb-search" type="search" placeholder="🔍 Buscar: familia, números, Perfekt, Akkusativ, hora…" autocomplete="off">
+    <button id="lbIndexBtn" class="lb-btn lb-primary" type="button">📑 Índice</button>
+    <button class="lb-btn" type="button" onclick="lbPrint()">🖨️ Imprimir</button>
+  </div>
+  <div class="lb-filters" id="lbFilters"></div>
+  <div id="lbIndex" class="lb-index" style="display:none"></div>
+  <div class="lb-chips" id="lbLessonChips"></div>
+  <div id="lbLessonBody"></div>
+</div>
+</main>
+
+<script>
+/* ===== LECCIONES DE ALEMÁN ===== */
+(function () {
+    const sh = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);
+    const gaps = list => list.map(([t, a, say]) => ({ t, a: [].concat(a), say }));
+    const pick = (list, opts) => list.map(([q, a, say]) => ({ q, a, say, opts }));
+
+    // ----- Ayudas para escribir los datos -----
+    // G: huecos [texto con ___, respuesta(s), traducción al español]
+    const G = list => list.map(([t, a, es, say]) => ({ t, a: [].concat(a), es: es || '', say }));
+    // V: vocabulario español → alemán con artículo [español, artículo, palabra, alternativas]
+    const V = list => list.map(([es, art, w, alt]) => ({ t: es + ' → ' + (art ? art + ' ' : '') + '___', a: [w].concat(alt || []), es: '' }));
+    // C: elegir [pregunta, respuesta, traducción]
+    const C = (list, opts) => list.map(([q, a, es, say]) => ({ q, a, es: es || '', say, opts }));
+    // H: escuchar [lo que se oye, respuesta, opciones]
+    const H = list => list.map(([say, a, opts]) => ({ q: '', say, a, opts }));
+
+    // ----- Índice (10 lecciones, nivel A1) -----
+    const UNITS = [
+        [1, 'Hallo!', 'Saludar, presentarse, países, números 0–20 y el alfabeto.'],
+        [2, 'Meine Familie', 'La familia, el verbo haben, mein/dein, la edad y los números hasta 100.'],
+        [3, 'Essen und Trinken', 'Comida y bebida, der/die/das, ein/kein, en el café.'],
+        [4, 'Wohnen', 'La casa, los muebles, adjetivos, dónde está cada cosa y el plural.'],
+        [5, 'Mein Tag', 'La hora, los días, los meses, la rutina y los verbos separables.'],
+        [6, 'Freizeit', 'Aficiones, gern/lieber, können, wollen/möchten y quedar con alguien.'],
+        [7, 'Einkaufen', 'Ropa, colores, en la tienda, el acusativo y el comparativo.'],
+        [8, 'In der Stadt', 'Lugares de la ciudad, pedir el camino, transportes e imperativo.'],
+        [9, 'Gesundheit', 'El cuerpo, en el médico, müssen y dürfen, dar consejos.'],
+        [10, 'Reisen', 'Viajes, el tiempo, el Perfekt, war/hatte y en el hotel.'],
+    ].map(([n, title, goal]) => ({ n, id: 'U' + n, title, goal }));
+
+    // Resumen en español (ayuda a la búsqueda)
+    const TOPICS = {
+        U1: 'Saludos (Guten Morgen, Guten Tag, Guten Abend), presentarse (ich heiße, ich komme aus, ich wohne in), el verbo sein, verbos regulares, países e idiomas, números 0–20, el alfabeto, du o Sie.',
+        U2: 'La familia (Vater, Mutter, Bruder, Schwester, Onkel, Tante), el verbo haben, posesivos mein, dein, sein, ihr, unser, números hasta 100, la edad, preguntas con W (wie, wo, woher, wer, was).',
+        U3: 'Alimentos (Brot, Käse, Milch, Apfel), artículos der, die, das, ein, kein, acusativo einen, verbos essen, trinken, mögen, en el café, comidas del día, hambre y sed.',
+        U4: 'Habitaciones (Küche, Bad, Schlafzimmer), muebles (Tisch, Stuhl, Bett), adjetivos contrarios, preposiciones auf, unter, neben, in, vor, hinter, el plural, es gibt.',
+        U5: 'La hora (halb, Viertel nach, Viertel vor), días de la semana, meses, verbos separables (aufstehen, anrufen, fernsehen), um, am, im, partes del día.',
+        U6: 'Aficiones (lesen, schwimmen, kochen, tanzen), gern, lieber, am liebsten, können, wollen, möchten, frecuencia (immer, oft, manchmal, nie), quedar con alguien.',
+        U7: 'Ropa (Hemd, Hose, Jacke, Schuhe), colores, en la tienda (Größe, anprobieren, kostet), acusativo den, die, das, comparativo (billiger, besser).',
+        U8: 'Lugares de la ciudad (Bahnhof, Apotheke, Rathaus), pedir el camino (geradeaus, links, rechts), transportes mit dem, mit der, imperativo, in den, ins, im.',
+        U9: 'El cuerpo (Kopf, Arm, Bein, Bauch), dolores y enfermedades (Fieber, Husten, Schmerzen), müssen, dürfen, en el médico, consejos con el imperativo.',
+        U10: 'El Perfekt con haben y sein (gegessen, gefahren), el tiempo (es regnet, die Sonne scheint), viajes (Koffer, Flughafen, Strand), war y hatte, en el hotel.',
+    };
+
+    const LESSONS = [
+    // ===================== 1. HALLO! =====================
+    { id: 'U1', ex: [
+        { title: 'Begrüßungen · Saludos', instr: '¿Qué saludo usas? Elige.', type: 'choice', shuffle: true,
+          opts: ['Guten Morgen', 'Guten Tag', 'Guten Abend', 'Gute Nacht'],
+          items: C([
+            ['Es ist acht Uhr morgens.', 'Guten Morgen', 'Son las ocho de la mañana.'],
+            ['Es ist sieben Uhr. Du frühstückst.', 'Guten Morgen', 'Son las siete. Desayunas.'],
+            ['Es ist zwei Uhr nachmittags.', 'Guten Tag', 'Son las dos de la tarde.'],
+            ['Es ist drei Uhr. Du kommst ins Büro.', 'Guten Tag', 'Son las tres. Llegas a la oficina.'],
+            ['Es ist acht Uhr abends.', 'Guten Abend', 'Son las ocho de la tarde-noche.'],
+            ['Du gehst ins Bett.', 'Gute Nacht', 'Te vas a la cama.'],
+          ]) },
+        { title: 'Sich vorstellen · Presentarse', instr: 'Completa la presentación.', type: 'gap',
+          items: G([
+            ['Hallo, ich ___ Anna.', 'heiße', 'Hola, me llamo Anna.'],
+            ['Ich ___ aus Spanien.', 'komme', 'Soy (vengo) de España.'],
+            ['Ich ___ in Barcelona.', 'wohne', 'Vivo en Barcelona.'],
+            ['Ich ___ Lehrerin.', 'bin', 'Soy profesora.'],
+            ['Wie ___ du?', 'heißt', '¿Cómo te llamas?'],
+            ['Woher ___ du?', 'kommst', '¿De dónde eres?'],
+            ['Wo ___ du?', 'wohnst', '¿Dónde vives?'],
+          ]) },
+        { title: 'Das Verb sein · El verbo ser', instr: 'Escribe la forma de sein (ser/estar).', type: 'gap', shuffle: true,
+          items: G([
+            ['Ich ___ Valentin.', 'bin', 'Yo soy Valentin.'],
+            ['Du ___ Lara.', 'bist', 'Tú eres Lara.'],
+            ['Er ___ aus Italien.', 'ist', 'Él es de Italia.'],
+            ['Sie ___ in Berlin. (ella)', 'ist', 'Ella está en Berlín.'],
+            ['Wir ___ Freunde.', 'sind', 'Nosotros somos amigos.'],
+            ['Ihr ___ Studenten.', 'seid', 'Vosotros sois estudiantes.'],
+            ['Sie ___ aus Österreich. (ellos)', 'sind', 'Ellos son de Austria.'],
+            ['___ Sie Herr Müller?', 'Sind', '¿Es usted el señor Müller?'],
+          ]) },
+        { title: 'kommen, wohnen, heißen', instr: 'Conjuga el verbo entre paréntesis.', type: 'gap', shuffle: true,
+          items: G([
+            ['Ich ___ aus Mexiko. (kommen)', 'komme', 'Yo soy de México. (venir)'],
+            ['Du ___ in Madrid. (wohnen)', 'wohnst', 'Tú vives en Madrid. (vivir)'],
+            ['Er ___ Paul. (heißen)', 'heißt', 'Él se llama Paul. (llamarse)'],
+            ['Sie ___ in Hamburg. (ella, wohnen)', 'wohnt', 'Ella vive en Hamburgo. (vivir)'],
+            ['Wir ___ aus Polen. (kommen)', 'kommen', 'Nosotros somos de Polonia. (venir)'],
+            ['Ihr ___ in Wien. (wohnen)', 'wohnt', 'Vosotros vivís en Viena. (vivir)'],
+            ['Sie ___ Maria und Jan. (ellos, heißen)', 'heißen', 'Ellos se llaman Maria y Jan. (llamarse)'],
+            ['Woher ___ Sie? (kommen)', 'kommen', '¿De dónde es usted? (venir)'],
+          ]) },
+        { title: 'Länder und Sprachen · Países e idiomas', instr: 'Escribe la palabra en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['España', '', 'Spanien'], ['Alemania', '', 'Deutschland'], ['Austria', '', 'Österreich'],
+            ['Suiza', 'die', 'Schweiz'], ['Francia', '', 'Frankreich'], ['Italia', '', 'Italien'],
+            ['Inglaterra', '', 'England'], ['el español (idioma)', '', 'Spanisch'],
+            ['el alemán (idioma)', '', 'Deutsch'], ['el inglés (idioma)', '', 'Englisch'],
+          ]) },
+        { title: 'Zahlen 0–20 · Números', instr: 'Escribe el número con letras.', type: 'gap', shuffle: true,
+          items: G([
+            ['0 → ___', 'null'], ['1 → ___', 'eins'], ['2 → ___', 'zwei'], ['3 → ___', 'drei'],
+            ['6 → ___', 'sechs'], ['7 → ___', 'sieben'], ['11 → ___', 'elf'], ['12 → ___', 'zwölf'],
+            ['13 → ___', 'dreizehn'], ['16 → ___', 'sechzehn'], ['17 → ___', 'siebzehn'], ['20 → ___', 'zwanzig'],
+          ]) },
+        { title: '🎧 Zahlen hören · Escuchar números', instr: '🔊 Escucha y elige el número.', type: 'choice', shuffle: true,
+          items: H([
+            ['neun', '9', ['9', '19', '5']], ['vier', '4', ['4', '14', '6']], ['fünfzehn', '15', ['15', '5', '50']],
+            ['acht', '8', ['8', '18', '3']], ['zwölf', '12', ['12', '2', '20']], ['neunzehn', '19', ['19', '9', '90']],
+            ['zehn', '10', ['10', '20', '2']], ['achtzehn', '18', ['18', '8', '80']],
+          ]) },
+        { title: 'Das Alphabet · El alfabeto', instr: '¿Cómo se dice esta letra en alemán? Elige.', type: 'choice', shuffle: true,
+          items: [
+            { q: 'J', a: 'jot', say: 'Jot', opts: ['jot', 'je', 'ji'] },
+            { q: 'V', a: 'fau', say: 'Fau', opts: ['fau', 'we', 'be'] },
+            { q: 'W', a: 'we', say: 'We', opts: ['we', 'fau', 'doble u'] },
+            { q: 'Z', a: 'tset', say: 'Zett', opts: ['tset', 'zeta', 'es'] },
+            { q: 'Y', a: 'ypsilon', say: 'Ypsilon', opts: ['ypsilon', 'i griega', 'ü'] },
+            { q: 'ß', a: 'eszett', say: 'Eszett', opts: ['eszett', 'be', 'doble ese'] },
+            { q: 'H', a: 'ha', say: 'Ha', opts: ['ha', 'hache', 'he'] },
+            { q: 'E', a: 'e', say: 'E', opts: ['e', 'i', 'a'] },
+            { q: 'I', a: 'i', say: 'I', opts: ['i', 'e', 'ai'] },
+          ] },
+        { title: 'du oder Sie? · ¿Tú o usted?', instr: '¿Con quién hablas de tú (du) y con quién de usted (Sie)?', type: 'choice', shuffle: true,
+          opts: ['du', 'Sie'],
+          items: C([
+            ['dein Bruder', 'du', 'tu hermano'], ['deine Ärztin', 'Sie', 'tu médica'],
+            ['ein Kind', 'du', 'un niño'], ['der Chef in der Firma', 'Sie', 'el jefe de la empresa'],
+            ['eine Polizistin', 'Sie', 'una policía'], ['deine Mutter', 'du', 'tu madre'],
+            ['ein Freund', 'du', 'un amigo'], ['der Verkäufer im Geschäft', 'Sie', 'el dependiente de la tienda'],
+          ]) },
+    ]},
+    // ===================== 2. MEINE FAMILIE =====================
+    { id: 'U2', ex: [
+        { title: 'Die Familie · La familia', instr: 'Escribe la palabra en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['padre', 'der', 'Vater'], ['madre', 'die', 'Mutter'], ['hermano', 'der', 'Bruder'], ['hermana', 'die', 'Schwester'],
+            ['hijo', 'der', 'Sohn'], ['hija', 'die', 'Tochter'], ['abuelo', 'der', 'Großvater', ['Opa']], ['abuela', 'die', 'Großmutter', ['Oma']],
+            ['tío', 'der', 'Onkel'], ['tía', 'die', 'Tante'], ['padres', 'die', 'Eltern'], ['hermanos (en general)', 'die', 'Geschwister'],
+          ]) },
+        { title: 'Das Verb haben · El verbo tener', instr: 'Escribe la forma de haben (tener).', type: 'gap', shuffle: true,
+          items: G([
+            ['Ich ___ einen Bruder.', 'habe', 'Tengo un hermano.'],
+            ['Du ___ zwei Schwestern.', 'hast', 'Tienes dos hermanas.'],
+            ['Er ___ drei Kinder.', 'hat', 'Él tiene tres hijos.'],
+            ['Maria ___ eine Tochter.', 'hat', 'Maria tiene una hija.'],
+            ['Wir ___ eine Katze.', 'haben', 'Tenemos un gato.'],
+            ['___ ihr Geschwister?', 'Habt', '¿Tenéis hermanos?'],
+            ['Sie ___ einen Sohn. (ellos)', 'haben', 'Ellos tienen un hijo.'],
+          ]) },
+        { title: 'mein, dein, sein, ihr…', instr: 'Completa con el posesivo.', type: 'gap', shuffle: true,
+          items: G([
+            ['Das ist ___ Vater. (mi)', 'mein', 'Este es mi padre.'],
+            ['Das ist ___ Mutter. (mi)', 'meine', 'Esta es mi madre.'],
+            ['Das sind ___ Eltern. (mis)', 'meine', 'Estos son mis padres.'],
+            ['Ist das ___ Bruder? (tu)', 'dein', '¿Es este tu hermano?'],
+            ['Ist das ___ Schwester? (tu)', 'deine', '¿Es esta tu hermana?'],
+            ['Paul und ___ Hund. (de él)', 'sein', 'Paul y su perro.'],
+            ['Lisa und ___ Katze. (de ella)', 'ihre', 'Lisa y su gata.'],
+            ['Das ist ___ Haus. (nuestra)', 'unser', 'Esta es nuestra casa.'],
+          ]) },
+        { title: 'Wer ist das? · ¿Quién es?', instr: 'Elige el familiar.', type: 'choice', shuffle: true,
+          opts: ['Großvater', 'Großmutter', 'Onkel', 'Tante', 'Cousin', 'Schwester'],
+          items: C([
+            ['Der Vater von meinem Vater ist mein…', 'Großvater', 'El padre de mi padre es mi…'],
+            ['Die Mutter von meiner Mutter ist meine…', 'Großmutter', 'La madre de mi madre es mi…'],
+            ['Der Bruder von meinem Vater ist mein…', 'Onkel', 'El hermano de mi padre es mi…'],
+            ['Die Schwester von meiner Mutter ist meine…', 'Tante', 'La hermana de mi madre es mi…'],
+            ['Der Sohn von meinem Onkel ist mein…', 'Cousin', 'El hijo de mi tío es mi…'],
+            ['Die Tochter von meinen Eltern ist meine…', 'Schwester', 'La hija de mis padres es mi…'],
+          ]) },
+        { title: 'Zahlen bis 100 · Números hasta 100', instr: 'Escribe el número con letras. Ojo: en alemán va primero la unidad (21 = einundzwanzig).', type: 'gap', shuffle: true,
+          items: G([
+            ['21 → ___', 'einundzwanzig'], ['30 → ___', 'dreißig'], ['34 → ___', 'vierunddreißig'],
+            ['45 → ___', 'fünfundvierzig'], ['56 → ___', 'sechsundfünfzig'], ['67 → ___', 'siebenundsechzig'],
+            ['78 → ___', 'achtundsiebzig'], ['89 → ___', 'neunundachtzig'], ['99 → ___', 'neunundneunzig'],
+            ['100 → ___', ['hundert', 'einhundert']],
+          ]) },
+        { title: '🎧 Zahlen hören · Escuchar números', instr: '🔊 Escucha y elige el número.', type: 'choice', shuffle: true,
+          items: H([
+            ['siebenundzwanzig', '27', ['27', '72', '17']], ['dreiundvierzig', '43', ['43', '34', '33']],
+            ['sechzig', '60', ['60', '16', '70']], ['achtundfünfzig', '58', ['58', '85', '48']],
+            ['einundneunzig', '91', ['91', '19', '81']], ['fünfunddreißig', '35', ['35', '53', '25']],
+            ['siebzig', '70', ['70', '17', '60']], ['zweiundachtzig', '82', ['82', '28', '92']],
+          ]) },
+        { title: 'Wie alt? · La edad', instr: 'Completa.', type: 'gap',
+          items: G([
+            ['Wie ___ bist du?', 'alt', '¿Cuántos años tienes?'],
+            ['Ich bin dreißig ___ alt.', 'Jahre', 'Tengo treinta años.'],
+            ['Mein Sohn ist acht Jahre ___.', 'alt', 'Mi hijo tiene ocho años.'],
+            ['___ alt ist deine Mutter?', 'Wie', '¿Cuántos años tiene tu madre?'],
+            ['Sie ___ sechzig Jahre alt.', 'ist', 'Ella tiene sesenta años.'],
+          ]) },
+        { title: 'W-Fragen · Preguntas', instr: 'Elige la palabra interrogativa.', type: 'choice', shuffle: true,
+          opts: ['Wie', 'Wo', 'Woher', 'Wer', 'Was', 'Wie alt'],
+          items: C([
+            ['___ heißt du?', 'Wie', '¿Cómo te llamas?'],
+            ['___ wohnst du?', 'Wo', '¿Dónde vives?'],
+            ['___ kommst du? — Aus Spanien.', 'Woher', '¿De dónde eres? — De España.'],
+            ['___ ist das? — Das ist mein Bruder.', 'Wer', '¿Quién es? — Es mi hermano.'],
+            ['___ machst du? — Ich bin Lehrer.', 'Was', '¿Qué haces? — Soy profesor.'],
+            ['___ bist du? — Fünfundzwanzig.', 'Wie alt', '¿Cuántos años tienes? — Veinticinco.'],
+          ]) },
+    ]},
+    // ===================== 3. ESSEN UND TRINKEN =====================
+    { id: 'U3', ex: [
+        { title: 'Lebensmittel · Alimentos', instr: 'Escribe la palabra en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['pan', 'das', 'Brot'], ['queso', 'der', 'Käse'], ['leche', 'die', 'Milch'], ['agua', 'das', 'Wasser'],
+            ['manzana', 'der', 'Apfel'], ['huevo', 'das', 'Ei'], ['carne', 'das', 'Fleisch'], ['pescado', 'der', 'Fisch'],
+            ['café', 'der', 'Kaffee'], ['cerveza', 'das', 'Bier'], ['patata', 'die', 'Kartoffel'], ['zumo', 'der', 'Saft'],
+          ]) },
+        { title: 'der, die oder das?', instr: 'Elige el artículo.', type: 'choice', shuffle: true,
+          opts: ['der', 'die', 'das'],
+          items: C([
+            ['___ Kaffee', 'der', 'el café'], ['___ Milch', 'die', 'la leche'], ['___ Brot', 'das', 'el pan'],
+            ['___ Käse', 'der', 'el queso'], ['___ Banane', 'die', 'el plátano'], ['___ Ei', 'das', 'el huevo'],
+            ['___ Salat', 'der', 'la ensalada'], ['___ Suppe', 'die', 'la sopa'], ['___ Wasser', 'das', 'el agua'],
+            ['___ Tee', 'der', 'el té'],
+          ]) },
+        { title: 'ein, einen, kein…', instr: 'Completa. Con der en acusativo: einen / keinen.', type: 'gap', shuffle: true,
+          items: G([
+            ['Ich möchte ___ Kaffee. (un)', 'einen', 'Quiero un café.'],
+            ['Ich möchte ___ Banane. (un)', 'eine', 'Quiero un plátano.'],
+            ['Ich esse ___ Ei. (un)', 'ein', 'Me como un huevo.'],
+            ['Hast du ___ Apfel? (una)', 'einen', '¿Tienes una manzana?'],
+            ['Ich trinke ___ Milch. (nada de)', 'keine', 'No bebo leche.'],
+            ['Wir haben ___ Brot. (nada de)', 'kein', 'No tenemos pan.'],
+            ['Er isst ___ Fleisch. (nada de)', 'kein', 'Él no come carne.'],
+            ['Ich habe ___ Hunger. (ningún)', 'keinen', 'No tengo hambre.'],
+          ]) },
+        { title: 'essen, trinken, mögen', instr: 'Conjuga el verbo entre paréntesis.', type: 'gap', shuffle: true,
+          items: G([
+            ['Ich ___ gern Fisch. (essen)', 'esse', 'Me gusta comer pescado. (comer)'],
+            ['Du ___ gern Pizza. (essen)', 'isst', 'Te gusta comer pizza. (comer)'],
+            ['Was ___ ihr? (essen)', 'esst', '¿Qué coméis? (comer)'],
+            ['Er ___ Kaffee. (trinken)', 'trinkt', 'Él bebe café. (beber)'],
+            ['Wir ___ Wasser. (trinken)', 'trinken', 'Bebemos agua. (beber)'],
+            ['Ich ___ Käse. (mögen)', 'mag', 'Me gusta el queso. (gustar)'],
+            ['___ du Tee? (mögen)', 'Magst', '¿Te gusta el té? (gustar)'],
+            ['Sie ___ keine Tomaten. (ella, mögen)', 'mag', 'A ella no le gustan los tomates. (gustar)'],
+          ]) },
+        { title: 'Im Café · En el café', instr: 'Completa el diálogo.', type: 'gap',
+          items: G([
+            ['Was ___ Sie? — Einen Kaffee, bitte.', 'möchten', '¿Qué desea? — Un café, por favor.'],
+            ['Ich ___ ein Wasser, bitte.', 'möchte', 'Querría un agua, por favor.'],
+            ['Mit Milch ___ Zucker?', 'oder', '¿Con leche o azúcar?'],
+            ['Und ein Stück Kuchen, ___.', 'bitte', 'Y un trozo de pastel, por favor.'],
+            ['Das ___ 6,50 Euro.', ['macht', 'kostet'], 'Son 6,50 euros.'],
+            ['Hier, bitte. Stimmt ___.', 'so', 'Aquí tiene. Quédese con el cambio.'],
+          ]) },
+        { title: 'Mahlzeiten · Las comidas', instr: 'Escribe la palabra en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['desayuno', 'das', 'Frühstück'], ['comida (mediodía)', 'das', 'Mittagessen'], ['cena', 'das', 'Abendessen'],
+            ['desayunar', '', 'frühstücken'], ['el hambre', 'der', 'Hunger'], ['la sed', 'der', 'Durst'],
+            ['la cuenta', 'die', 'Rechnung'], ['el plato del día', 'das', 'Tagesgericht'],
+          ]) },
+        { title: '🎧 Was hörst du? · ¿Qué oyes?', instr: '🔊 Escucha y elige qué significa.', type: 'choice', shuffle: true,
+          items: H([
+            ['das Brot', 'pan', ['pan', 'queso', 'agua']], ['der Käse', 'queso', ['queso', 'café', 'pan']],
+            ['die Milch', 'leche', ['leche', 'miel', 'carne']], ['der Apfel', 'manzana', ['manzana', 'patata', 'huevo']],
+            ['das Fleisch', 'carne', ['carne', 'pescado', 'fruta']], ['der Saft', 'zumo', ['zumo', 'sopa', 'sal']],
+            ['das Ei', 'huevo', ['huevo', 'hielo', 'té']], ['die Kartoffel', 'patata', ['patata', 'tomate', 'manzana']],
+          ]) },
+    ]},
+    // ===================== 4. WOHNEN =====================
+    { id: 'U4', ex: [
+        { title: 'Die Zimmer · Las habitaciones', instr: 'Escribe la palabra en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['cocina', 'die', 'Küche'], ['baño', 'das', 'Bad'], ['dormitorio', 'das', 'Schlafzimmer'], ['salón', 'das', 'Wohnzimmer'],
+            ['balcón', 'der', 'Balkon'], ['jardín', 'der', 'Garten'], ['pasillo', 'der', 'Flur'], ['comedor', 'das', 'Esszimmer'],
+          ]) },
+        { title: 'Möbel · Muebles', instr: 'Escribe la palabra en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['mesa', 'der', 'Tisch'], ['silla', 'der', 'Stuhl'], ['cama', 'das', 'Bett'], ['sofá', 'das', 'Sofa'],
+            ['armario', 'der', 'Schrank'], ['lámpara', 'die', 'Lampe'], ['nevera', 'der', 'Kühlschrank'], ['estantería', 'das', 'Regal'],
+          ]) },
+        { title: 'Gegenteile · Contrarios', instr: 'Escribe el adjetivo contrario.', type: 'gap', shuffle: true,
+          items: G([
+            ['groß ↔ ___', 'klein', 'grande ↔'], ['hell ↔ ___', 'dunkel', 'luminoso ↔'], ['alt ↔ ___', 'neu', 'viejo ↔'],
+            ['teuer ↔ ___', 'billig', 'caro ↔'], ['laut ↔ ___', ['ruhig', 'leise'], 'ruidoso ↔'], ['schön ↔ ___', 'hässlich', 'bonito ↔'],
+            ['lang ↔ ___', 'kurz', 'largo ↔'], ['warm ↔ ___', 'kalt', 'caliente ↔'],
+          ]) },
+        { title: 'Wo ist das? · ¿Dónde está?', instr: 'Elige la preposición.', type: 'choice', shuffle: true,
+          opts: ['auf', 'unter', 'neben', 'in', 'vor', 'hinter'],
+          items: C([
+            ['Die Katze ist ___ dem Tisch. (encima)', 'auf', 'El gato está encima de la mesa.'],
+            ['Der Hund schläft ___ dem Tisch. (debajo)', 'unter', 'El perro duerme debajo de la mesa.'],
+            ['Die Lampe steht ___ dem Sofa. (al lado)', 'neben', 'La lámpara está al lado del sofá.'],
+            ['Die Bücher sind ___ der Kiste. (dentro)', 'in', 'Los libros están dentro de la caja.'],
+            ['Das Auto steht ___ dem Haus. (delante)', 'vor', 'El coche está delante de la casa.'],
+            ['Der Garten ist ___ dem Haus. (detrás)', 'hinter', 'El jardín está detrás de la casa.'],
+          ]) },
+        { title: 'Der Plural · El plural', instr: 'Escribe el plural.', type: 'gap', shuffle: true,
+          items: G([
+            ['der Tisch → die ___', 'Tische', 'la mesa →'], ['der Stuhl → die ___', 'Stühle', 'la silla →'],
+            ['das Bett → die ___', 'Betten', 'la cama →'], ['die Lampe → die ___', 'Lampen', 'la lámpara →'],
+            ['das Zimmer → die ___', 'Zimmer', 'la habitación →'], ['das Haus → die ___', 'Häuser', 'la casa →'],
+            ['die Wohnung → die ___', 'Wohnungen', 'el piso →'], ['der Schrank → die ___', 'Schränke', 'el armario →'],
+          ]) },
+        { title: 'Meine Wohnung · Mi piso', instr: 'Completa con el verbo.', type: 'gap',
+          items: G([
+            ['Meine Wohnung ___ drei Zimmer. (tener)', 'hat', 'Mi piso tiene tres habitaciones.'],
+            ['Die Küche ___ sehr klein. (ser)', 'ist', 'La cocina es muy pequeña.'],
+            ['Es ___ einen Balkon. (hay)', 'gibt', 'Hay un balcón.'],
+            ['Die Miete ___ 800 Euro. (costar)', 'kostet', 'El alquiler cuesta 800 euros.'],
+            ['Wir ___ im zweiten Stock. (vivir)', 'wohnen', 'Vivimos en el segundo piso.'],
+            ['Das Wohnzimmer ist hell und ___. (grande)', 'groß', 'El salón es luminoso y grande.'],
+          ]) },
+        { title: '🎧 Was hörst du? · ¿Qué oyes?', instr: '🔊 Escucha y elige qué significa.', type: 'choice', shuffle: true,
+          items: H([
+            ['die Küche', 'cocina', ['cocina', 'cama', 'silla']], ['das Bett', 'cama', ['cama', 'baño', 'mesa']],
+            ['der Stuhl', 'silla', ['silla', 'mesa', 'sofá']], ['das Schlafzimmer', 'dormitorio', ['dormitorio', 'salón', 'pasillo']],
+            ['der Schrank', 'armario', ['armario', 'lámpara', 'jardín']], ['das Fenster', 'ventana', ['ventana', 'puerta', 'pared']],
+            ['die Tür', 'puerta', ['puerta', 'ventana', 'techo']], ['der Garten', 'jardín', ['jardín', 'garaje', 'balcón']],
+          ]) },
+    ]},
+    // ===================== 5. MEIN TAG =====================
+    { id: 'U5', ex: [
+        { title: 'Wie spät ist es? · La hora', instr: 'Completa la hora (forma de hablar).', type: 'gap', shuffle: true,
+          items: G([
+            ['8:00 → Es ist acht ___.', 'Uhr', 'Son las ocho.'],
+            ['8:30 → Es ist ___ neun.', 'halb', 'Son las ocho y media (¡en alemán: «media nueve»!).'],
+            ['8:15 → Es ist Viertel ___ acht.', 'nach', 'Son las ocho y cuarto.'],
+            ['8:45 → Es ist Viertel ___ neun.', 'vor', 'Son las nueve menos cuarto.'],
+            ['9:10 → Es ist zehn nach ___.', 'neun', 'Son las nueve y diez.'],
+            ['7:50 → Es ist zehn ___ acht.', 'vor', 'Son las ocho menos diez.'],
+            ['12:30 → Es ist halb ___.', 'eins', 'Son las doce y media.'],
+          ]) },
+        { title: 'Die Wochentage · Los días', instr: 'Escribe el día en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['lunes', 'der', 'Montag'], ['martes', 'der', 'Dienstag'], ['miércoles', 'der', 'Mittwoch'], ['jueves', 'der', 'Donnerstag'],
+            ['viernes', 'der', 'Freitag'], ['sábado', 'der', 'Samstag'], ['domingo', 'der', 'Sonntag'], ['fin de semana', 'das', 'Wochenende'],
+          ]) },
+        { title: 'Trennbare Verben · Verbos separables', instr: 'Conjuga. La otra parte del verbo ya está al final.', type: 'gap', shuffle: true,
+          items: G([
+            ['Ich ___ um 7 Uhr auf. (aufstehen)', 'stehe', 'Me levanto a las 7. (levantarse)'],
+            ['Wann ___ du auf? (aufstehen)', 'stehst', '¿Cuándo te levantas? (levantarse)'],
+            ['Er ___ seine Mutter an. (anrufen)', 'ruft', 'Él llama a su madre. (llamar por teléfono)'],
+            ['Wir ___ im Supermarkt ein. (einkaufen)', 'kaufen', 'Hacemos la compra en el supermercado. (comprar)'],
+            ['Du ___ abends fern. (fernsehen)', 'siehst', 'Ves la tele por la noche. (ver la tele)'],
+            ['Der Zug ___ um 9 Uhr ab. (abfahren)', 'fährt', 'El tren sale a las 9. (salir)'],
+            ['Ich ___ das Fenster zu. (zumachen)', 'mache', 'Cierro la ventana. (cerrar)'],
+            ['Sie ___ um 22 Uhr ein. (ella, einschlafen)', 'schläft', 'Ella se duerme a las 22 h. (dormirse)'],
+          ]) },
+        { title: 'um, am oder im?', instr: 'um + hora · am + día / parte del día · im + mes / estación.', type: 'choice', shuffle: true,
+          opts: ['um', 'am', 'im'],
+          items: C([
+            ['Ich stehe ___ 7 Uhr auf.', 'um', 'Me levanto a las 7.'],
+            ['___ Montag arbeite ich.', 'Am', 'El lunes trabajo.'],
+            ['___ Sommer ist es heiß.', 'Im', 'En verano hace calor.'],
+            ['Der Kurs beginnt ___ halb neun.', 'um', 'El curso empieza a las ocho y media.'],
+            ['Ich habe ___ Mai Geburtstag.', 'im', 'Mi cumpleaños es en mayo.'],
+            ['___ Wochenende schlafe ich lange.', 'Am', 'El fin de semana duermo mucho.'],
+            ['Wir essen ___ 13 Uhr.', 'um', 'Comemos a las 13 h.'],
+            ['___ Abend lese ich.', 'Am', 'Por la noche leo.'],
+          ]) },
+        { title: 'Die Monate · Los meses', instr: 'Escribe el mes en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['enero', '', 'Januar'], ['febrero', '', 'Februar'], ['marzo', '', 'März'], ['abril', '', 'April'],
+            ['mayo', '', 'Mai'], ['junio', '', 'Juni'], ['julio', '', 'Juli'], ['agosto', '', 'August'],
+            ['septiembre', '', 'September'], ['octubre', '', 'Oktober'], ['noviembre', '', 'November'], ['diciembre', '', 'Dezember'],
+          ]) },
+        { title: 'Mein Tag · Mi día', instr: 'Completa la rutina.', type: 'gap',
+          items: G([
+            ['Um sieben Uhr ___ ich. (desayunar)', 'frühstücke', 'A las siete desayuno.'],
+            ['Dann ___ ich zur Arbeit. (ir)', 'gehe', 'Luego voy al trabajo.'],
+            ['Ich ___ von neun bis fünf. (trabajar)', 'arbeite', 'Trabajo de nueve a cinco.'],
+            ['Am Abend ___ ich. (cocinar)', 'koche', 'Por la noche cocino.'],
+            ['Um elf Uhr ___ ich ins Bett. (ir)', 'gehe', 'A las once me voy a la cama.'],
+          ]) },
+        { title: '🎧 Uhrzeit hören · Escuchar la hora', instr: '🔊 Escucha y elige la hora.', type: 'choice', shuffle: true,
+          items: H([
+            ['Es ist halb drei.', '2:30', ['2:30', '3:30', '2:15']], ['Es ist Viertel nach vier.', '4:15', ['4:15', '3:45', '4:45']],
+            ['Es ist Viertel vor sieben.', '6:45', ['6:45', '7:15', '7:45']], ['Es ist halb acht.', '7:30', ['7:30', '8:30', '8:00']],
+            ['Es ist zehn nach elf.', '11:10', ['11:10', '10:50', '10:11']], ['Es ist fünf vor zwölf.', '11:55', ['11:55', '12:05', '5:12']],
+          ]) },
+    ]},
+    // ===================== 6. FREIZEIT =====================
+    { id: 'U6', ex: [
+        { title: 'Hobbys · Aficiones', instr: 'Escribe la actividad en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['leer', '', 'lesen'], ['nadar', '', 'schwimmen'], ['cocinar', '', 'kochen'], ['bailar', '', 'tanzen'],
+            ['viajar', '', 'reisen'], ['jugar al fútbol', '', 'Fußball spielen'], ['escuchar música', '', 'Musik hören'],
+            ['hacer deporte', '', 'Sport machen'], ['ir al cine', '', 'ins Kino gehen'], ['pintar', '', 'malen'],
+          ]) },
+        { title: 'gern, lieber, am liebsten', instr: 'Completa: gern (me gusta), lieber (prefiero), am liebsten (lo que más).', type: 'gap',
+          items: G([
+            ['Ich lese ___. (me gusta)', 'gern', 'Me gusta leer.'],
+            ['Spielst du ___ Fußball? (te gusta)', 'gern', '¿Te gusta jugar al fútbol?'],
+            ['Er sieht nicht ___ fern. (no le gusta)', 'gern', 'No le gusta ver la tele.'],
+            ['Ich schwimme gern, aber ich tanze ___. (prefiero)', 'lieber', 'Me gusta nadar, pero prefiero bailar.'],
+            ['Am ___ koche ich. (lo que más)', 'liebsten', 'Lo que más me gusta es cocinar.'],
+          ]) },
+        { title: 'Das Verb können · Poder / saber hacer', instr: 'Escribe la forma de können.', type: 'gap', shuffle: true,
+          items: G([
+            ['Ich ___ gut schwimmen.', 'kann', 'Sé nadar bien.'],
+            ['___ du Gitarre spielen?', 'Kannst', '¿Sabes tocar la guitarra?'],
+            ['Er ___ nicht kochen.', 'kann', 'Él no sabe cocinar.'],
+            ['Wir ___ am Samstag ins Kino gehen.', 'können', 'Podemos ir al cine el sábado.'],
+            ['___ ihr Deutsch sprechen?', 'Könnt', '¿Sabéis hablar alemán?'],
+            ['Sie ___ sehr gut tanzen. (ellos)', 'können', 'Ellos saben bailar muy bien.'],
+          ]) },
+        { title: 'wollen und möchten · Querer', instr: 'Escribe la forma del verbo entre paréntesis.', type: 'gap', shuffle: true,
+          items: G([
+            ['Ich ___ Deutsch lernen. (wollen)', 'will', 'Quiero aprender alemán.'],
+            ['Du ___ ins Kino gehen. (wollen)', 'willst', 'Quieres ir al cine.'],
+            ['Er ___ reisen. (wollen)', 'will', 'Él quiere viajar.'],
+            ['Ihr ___ tanzen. (wollen)', 'wollt', 'Vosotros queréis bailar.'],
+            ['Wir ___ einen Kaffee trinken. (möchten)', 'möchten', 'Nos gustaría tomar un café.'],
+            ['___ du mitkommen? (möchten)', 'Möchtest', '¿Te gustaría venir?'],
+          ]) },
+        { title: 'Wie oft? · ¿Con qué frecuencia?', instr: 'Elige la palabra.', type: 'choice', shuffle: true,
+          opts: ['immer', 'oft', 'manchmal', 'selten', 'nie'],
+          items: C([
+            ['Ich trinke ___ Kaffee am Morgen. (siempre)', 'immer', 'Siempre tomo café por la mañana.'],
+            ['Wir gehen ___ ins Kino. (a menudo)', 'oft', 'Vamos a menudo al cine.'],
+            ['Er spielt ___ Tennis. (a veces)', 'manchmal', 'Él juega a veces al tenis.'],
+            ['Ich koche ___. (pocas veces)', 'selten', 'Cocino pocas veces.'],
+            ['Sie tanzt ___. (nunca)', 'nie', 'Ella no baila nunca.'],
+          ]) },
+        { title: 'Eine Verabredung · Quedar', instr: 'Completa el diálogo.', type: 'gap',
+          items: G([
+            ['Hast du am Samstag ___? (tiempo)', 'Zeit', '¿Tienes tiempo el sábado?'],
+            ['Wollen wir ins Kino ___?', 'gehen', '¿Vamos al cine?'],
+            ['Ja, gern! ___ treffen wir uns? (cuándo)', 'Wann', '¡Sí, me encantaría! ¿Cuándo quedamos?'],
+            ['Um acht Uhr ___ dem Kino. (delante de)', 'vor', 'A las ocho delante del cine.'],
+            ['___ dann! (hasta)', 'Bis', '¡Hasta luego!'],
+            ['Tut mir leid, ich ___ keine Zeit.', 'habe', 'Lo siento, no tengo tiempo.'],
+          ]) },
+        { title: '🎧 Was hörst du? · ¿Qué oyes?', instr: '🔊 Escucha y elige qué significa.', type: 'choice', shuffle: true,
+          items: H([
+            ['schwimmen', 'nadar', ['nadar', 'bailar', 'cantar']], ['lesen', 'leer', ['leer', 'jugar', 'viajar']],
+            ['tanzen', 'bailar', ['bailar', 'cocinar', 'pintar']], ['kochen', 'cocinar', ['cocinar', 'correr', 'leer']],
+            ['reisen', 'viajar', ['viajar', 'escribir', 'nadar']], ['singen', 'cantar', ['cantar', 'oír', 'jugar']],
+            ['wandern', 'hacer senderismo', ['hacer senderismo', 'esquiar', 'pescar']], ['malen', 'pintar', ['pintar', 'comer', 'bailar']],
+          ]) },
+    ]},
+    // ===================== 7. EINKAUFEN =====================
+    { id: 'U7', ex: [
+        { title: 'Kleidung · Ropa', instr: 'Escribe la prenda en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['camisa', 'das', 'Hemd'], ['pantalón', 'die', 'Hose'], ['falda', 'der', 'Rock'], ['vestido', 'das', 'Kleid'],
+            ['chaqueta', 'die', 'Jacke'], ['zapatos', 'die', 'Schuhe'], ['jersey', 'der', 'Pullover', ['Pulli']], ['camiseta', 'das', 'T-Shirt'],
+            ['abrigo', 'der', 'Mantel'], ['bufanda', 'der', 'Schal'],
+          ]) },
+        { title: 'Farben · Colores', instr: 'Escribe el color en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['rojo', '', 'rot'], ['azul', '', 'blau'], ['verde', '', 'grün'], ['amarillo', '', 'gelb'], ['negro', '', 'schwarz'],
+            ['blanco', '', 'weiß'], ['gris', '', 'grau'], ['marrón', '', 'braun'], ['naranja', '', 'orange'], ['rosa', '', 'rosa'],
+          ]) },
+        { title: 'Im Geschäft · En la tienda', instr: 'Completa el diálogo.', type: 'gap',
+          items: G([
+            ['Kann ich Ihnen ___? (ayudar)', 'helfen', '¿Le puedo ayudar?'],
+            ['Ja, ich ___ eine Hose. (buscar)', 'suche', 'Sí, busco un pantalón.'],
+            ['Welche ___ haben Sie? (talla)', 'Größe', '¿Qué talla tiene?'],
+            ['Kann ich die Hose ___? (probarme)', 'anprobieren', '¿Me puedo probar el pantalón?'],
+            ['Wie viel ___ die Jacke? (costar)', 'kostet', '¿Cuánto cuesta la chaqueta?'],
+            ['Die Schuhe sind zu ___. (caros)', 'teuer', 'Los zapatos son demasiado caros.'],
+            ['Gut, ich ___ den Pullover. (me llevo)', 'nehme', 'Bien, me llevo el jersey.'],
+          ]) },
+        { title: 'den, die oder das? (Akkusativ)', instr: 'Elige el artículo en acusativo. Solo cambia der → den.', type: 'choice', shuffle: true,
+          opts: ['den', 'die', 'das'],
+          items: C([
+            ['Ich kaufe ___ Rock. (der Rock)', 'den', 'Compro la falda.'],
+            ['Ich nehme ___ Jacke. (die Jacke)', 'die', 'Me llevo la chaqueta.'],
+            ['Er sucht ___ Hemd. (das Hemd)', 'das', 'Él busca la camisa.'],
+            ['Wir brauchen ___ Mantel. (der Mantel)', 'den', 'Necesitamos el abrigo.'],
+            ['Sie probiert ___ Schuhe an. (die Schuhe)', 'die', 'Ella se prueba los zapatos.'],
+            ['Ich finde ___ Kleid schön. (das Kleid)', 'das', 'El vestido me parece bonito.'],
+            ['Magst du ___ Pullover? (der Pullover)', 'den', '¿Te gusta el jersey?'],
+          ]) },
+        { title: 'Der Komparativ · Comparar', instr: 'Escribe el comparativo (más…).', type: 'gap', shuffle: true,
+          items: G([
+            ['billig → ___', 'billiger', 'barato → más barato'], ['teuer → ___', 'teurer', 'caro → más caro'],
+            ['schön → ___', 'schöner', 'bonito → más bonito'], ['klein → ___', 'kleiner', 'pequeño → más pequeño'],
+            ['groß → ___', 'größer', 'grande → más grande'], ['lang → ___', 'länger', 'largo → más largo'],
+            ['gut → ___', 'besser', 'bueno → mejor'], ['Die Jacke ist teurer ___ der Mantel.', 'als', 'La chaqueta es más cara que el abrigo.'],
+          ]) },
+        { title: '🎧 Welche Farbe? · ¿Qué color?', instr: '🔊 Escucha y elige el color.', type: 'choice', shuffle: true,
+          items: H([
+            ['rot', 'rojo', ['rojo', 'rosa', 'marrón']], ['grün', 'verde', ['verde', 'gris', 'azul']],
+            ['gelb', 'amarillo', ['amarillo', 'naranja', 'blanco']], ['schwarz', 'negro', ['negro', 'blanco', 'gris']],
+            ['weiß', 'blanco', ['blanco', 'negro', 'amarillo']], ['blau', 'azul', ['azul', 'marrón', 'verde']],
+            ['braun', 'marrón', ['marrón', 'azul', 'rojo']], ['grau', 'gris', ['gris', 'verde', 'rojo']],
+          ]) },
+    ]},
+    // ===================== 8. IN DER STADT =====================
+    { id: 'U8', ex: [
+        { title: 'Orte in der Stadt · Lugares', instr: 'Escribe el lugar en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['estación de tren', 'der', 'Bahnhof'], ['banco', 'die', 'Bank'], ['farmacia', 'die', 'Apotheke'], ['supermercado', 'der', 'Supermarkt'],
+            ['hospital', 'das', 'Krankenhaus'], ['correos', 'die', 'Post'], ['museo', 'das', 'Museum'], ['ayuntamiento', 'das', 'Rathaus'],
+            ['panadería', 'die', 'Bäckerei'], ['parada de autobús', 'die', 'Bushaltestelle'],
+          ]) },
+        { title: 'Nach dem Weg fragen · Pedir el camino', instr: 'Completa.', type: 'gap',
+          items: G([
+            ['Entschuldigung, ___ ist der Bahnhof? (dónde)', 'wo', 'Perdone, ¿dónde está la estación?'],
+            ['Gehen Sie ___. (todo recto)', 'geradeaus', 'Siga todo recto.'],
+            ['Dann gehen Sie ___. (a la izquierda)', 'links', 'Luego vaya a la izquierda.'],
+            ['Die Post ist ___. (a la derecha)', 'rechts', 'Correos está a la derecha.'],
+            ['Die Bank ist ___ der Post. (al lado de)', 'neben', 'El banco está al lado de correos.'],
+            ['Ist das ___? — Nein, nur fünf Minuten. (lejos)', 'weit', '¿Está lejos? — No, solo cinco minutos.'],
+          ]) },
+        { title: 'mit dem oder mit der?', instr: '¿En qué vas? der/das → mit dem · die → mit der.', type: 'choice', shuffle: true,
+          opts: ['mit dem', 'mit der'],
+          items: C([
+            ['Ich fahre ___ Bus. (der Bus)', 'mit dem', 'Voy en autobús.'],
+            ['Ich fahre ___ Straßenbahn. (die Straßenbahn)', 'mit der', 'Voy en tranvía.'],
+            ['Wir fahren ___ Auto. (das Auto)', 'mit dem', 'Vamos en coche.'],
+            ['Sie fährt ___ U-Bahn. (die U-Bahn)', 'mit der', 'Ella va en metro.'],
+            ['Er fährt ___ Zug. (der Zug)', 'mit dem', 'Él va en tren.'],
+            ['Ich fahre ___ Fahrrad. (das Fahrrad)', 'mit dem', 'Voy en bici.'],
+          ]) },
+        { title: 'Der Imperativ · Dar instrucciones', instr: 'Escribe el imperativo.', type: 'gap', shuffle: true,
+          items: G([
+            ['___ Sie geradeaus! (gehen)', 'Gehen', '¡Siga todo recto! (usted)'],
+            ['___ Sie hier! (warten)', 'Warten', '¡Espere aquí! (usted)'],
+            ['___ Sie bitte langsam! (sprechen)', 'Sprechen', '¡Hable despacio, por favor! (usted)'],
+            ['___ Sie den Bus Nummer 5! (nehmen)', 'Nehmen', '¡Coja el autobús número 5! (usted)'],
+            ['___ geradeaus! (gehen, du)', ['Geh', 'Gehe'], '¡Ve todo recto! (tú)'],
+            ['___ mir, bitte! (helfen, du)', 'Hilf', '¡Ayúdame, por favor! (tú)'],
+            ['___ das Buch! (lesen, du)', 'Lies', '¡Lee el libro! (tú)'],
+          ]) },
+        { title: 'Wohin? Wo? · ¿Adónde? ¿Dónde?', instr: 'Adónde (movimiento): in den / in die / ins · Dónde: im / in der.', type: 'choice', shuffle: true,
+          opts: ['in den', 'in die', 'ins', 'im', 'in der'],
+          items: C([
+            ['Ich gehe ___ Supermarkt.', 'in den', 'Voy al supermercado.'],
+            ['Ich bin ___ Supermarkt.', 'im', 'Estoy en el supermercado.'],
+            ['Wir gehen ___ Apotheke.', 'in die', 'Vamos a la farmacia.'],
+            ['Wir sind ___ Apotheke.', 'in der', 'Estamos en la farmacia.'],
+            ['Gehst du ___ Kino?', 'ins', '¿Vas al cine?'],
+            ['Sie ist ___ Kino.', 'im', 'Ella está en el cine.'],
+          ]) },
+        { title: '🎧 Was hörst du? · ¿Qué oyes?', instr: '🔊 Escucha y elige qué significa.', type: 'choice', shuffle: true,
+          items: H([
+            ['der Bahnhof', 'estación de tren', ['estación de tren', 'banco', 'aeropuerto']], ['die Apotheke', 'farmacia', ['farmacia', 'biblioteca', 'panadería']],
+            ['das Rathaus', 'ayuntamiento', ['ayuntamiento', 'hospital', 'museo']], ['geradeaus', 'todo recto', ['todo recto', 'a la derecha', 'atrás']],
+            ['links', 'a la izquierda', ['a la izquierda', 'a la derecha', 'arriba']], ['die Straße', 'calle', ['calle', 'plaza', 'puente']],
+            ['die Kirche', 'iglesia', ['iglesia', 'cocina', 'escuela']], ['die Bäckerei', 'panadería', ['panadería', 'banco', 'carnicería']],
+          ]) },
+    ]},
+    // ===================== 9. GESUNDHEIT =====================
+    { id: 'U9', ex: [
+        { title: 'Der Körper · El cuerpo', instr: 'Escribe la palabra en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['cabeza', 'der', 'Kopf'], ['brazo', 'der', 'Arm'], ['pierna', 'das', 'Bein'], ['mano', 'die', 'Hand'],
+            ['pie', 'der', 'Fuß'], ['ojo', 'das', 'Auge'], ['oreja', 'das', 'Ohr'], ['boca', 'der', 'Mund'],
+            ['nariz', 'die', 'Nase'], ['espalda', 'der', 'Rücken'], ['barriga', 'der', 'Bauch'], ['diente', 'der', 'Zahn'],
+          ]) },
+        { title: 'Was fehlt dir? · ¿Qué te pasa?', instr: 'Completa.', type: 'gap',
+          items: G([
+            ['Ich habe ___schmerzen. (cabeza)', 'Kopf', 'Me duele la cabeza.'],
+            ['Ich habe ___. (fiebre)', 'Fieber', 'Tengo fiebre.'],
+            ['Ich habe ___. (tos)', 'Husten', 'Tengo tos.'],
+            ['Ich habe ___. (resfriado)', ['Schnupfen', 'eine Erkältung'], 'Estoy resfriado.'],
+            ['Mir ___ der Bauch weh. (doler)', 'tut', 'Me duele la barriga.'],
+            ['Mir tun die Füße ___.', 'weh', 'Me duelen los pies.'],
+          ]) },
+        { title: 'Das Verb müssen · Tener que', instr: 'Escribe la forma de müssen.', type: 'gap', shuffle: true,
+          items: G([
+            ['Ich ___ zum Arzt gehen.', 'muss', 'Tengo que ir al médico.'],
+            ['Du ___ im Bett bleiben.', 'musst', 'Tienes que quedarte en la cama.'],
+            ['Er ___ Tabletten nehmen.', 'muss', 'Él tiene que tomar pastillas.'],
+            ['Wir ___ viel Wasser trinken.', 'müssen', 'Tenemos que beber mucha agua.'],
+            ['Ihr ___ früh schlafen.', 'müsst', 'Tenéis que dormir pronto.'],
+          ]) },
+        { title: 'Das Verb dürfen · Poder (permiso)', instr: 'Escribe la forma de dürfen.', type: 'gap', shuffle: true,
+          items: G([
+            ['Hier ___ man nicht rauchen.', 'darf', 'Aquí no se puede fumar.'],
+            ['___ ich das Fenster öffnen?', 'Darf', '¿Puedo abrir la ventana?'],
+            ['Du ___ jetzt nach Hause gehen.', 'darfst', 'Ya puedes irte a casa.'],
+            ['Kinder ___ keinen Alkohol trinken.', 'dürfen', 'Los niños no pueden beber alcohol.'],
+          ]) },
+        { title: 'Beim Arzt · En el médico', instr: '¿Quién lo dice: el médico (Arzt) o el paciente (Patient)?', type: 'choice', shuffle: true,
+          opts: ['Arzt', 'Patient'],
+          items: C([
+            ['Was fehlt Ihnen?', 'Arzt', '¿Qué le pasa?'],
+            ['Ich habe seit drei Tagen Fieber.', 'Patient', 'Tengo fiebre desde hace tres días.'],
+            ['Machen Sie bitte den Mund auf.', 'Arzt', 'Abra la boca, por favor.'],
+            ['Muss ich Tabletten nehmen?', 'Patient', '¿Tengo que tomar pastillas?'],
+            ['Ich schreibe Ihnen ein Rezept.', 'Arzt', 'Le hago una receta.'],
+            ['Kann ich morgen arbeiten?', 'Patient', '¿Puedo trabajar mañana?'],
+            ['Gute Besserung!', 'Arzt', '¡Que se mejore!'],
+          ]) },
+        { title: 'Ratschläge · Consejos', instr: 'Da un consejo con el imperativo (du).', type: 'gap', shuffle: true,
+          items: G([
+            ['___ viel Tee! (trinken)', ['Trink', 'Trinke'], '¡Bebe mucho té!'],
+            ['___ im Bett! (bleiben)', ['Bleib', 'Bleibe'], '¡Quédate en la cama!'],
+            ['___ zum Arzt! (gehen)', ['Geh', 'Gehe'], '¡Ve al médico!'],
+            ['___ nicht so viel! (arbeiten)', 'Arbeite', '¡No trabajes tanto!'],
+            ['___ die Tabletten! (nehmen)', 'Nimm', '¡Tómate las pastillas!'],
+            ['___ dich aus! (ausruhen)', ['Ruh', 'Ruhe'], '¡Descansa!'],
+          ]) },
+        { title: '🎧 Was hörst du? · ¿Qué oyes?', instr: '🔊 Escucha y elige qué significa.', type: 'choice', shuffle: true,
+          items: H([
+            ['der Kopf', 'cabeza', ['cabeza', 'cuello', 'codo']], ['das Bein', 'pierna', ['pierna', 'brazo', 'hueso']],
+            ['die Hand', 'mano', ['mano', 'pie', 'dedo']], ['der Bauch', 'barriga', ['barriga', 'espalda', 'pecho']],
+            ['das Auge', 'ojo', ['ojo', 'oreja', 'boca']], ['das Fieber', 'fiebre', ['fiebre', 'tos', 'gripe']],
+            ['der Zahn', 'diente', ['diente', 'lengua', 'labio']], ['der Rücken', 'espalda', ['espalda', 'rodilla', 'cara']],
+          ]) },
+    ]},
+    // ===================== 10. REISEN =====================
+    { id: 'U10', ex: [
+        { title: 'Reisewörter · Viajes', instr: 'Escribe la palabra en alemán.', type: 'gap', shuffle: true,
+          items: V([
+            ['maleta', 'der', 'Koffer'], ['billete', 'die', 'Fahrkarte', ['Karte']], ['aeropuerto', 'der', 'Flughafen'], ['avión', 'das', 'Flugzeug'],
+            ['tren', 'der', 'Zug'], ['playa', 'der', 'Strand'], ['montaña', 'der', 'Berg'], ['mar', 'das', 'Meer'],
+            ['pasaporte', 'der', 'Pass', ['Reisepass']], ['vacaciones', 'der', 'Urlaub'],
+          ]) },
+        { title: 'Das Wetter · El tiempo', instr: 'Completa.', type: 'gap', shuffle: true,
+          items: G([
+            ['Die Sonne ___. (brillar)', 'scheint', 'Hace sol.'],
+            ['Es ___. (llueve)', 'regnet', 'Llueve.'],
+            ['Es ___. (nieva)', 'schneit', 'Nieva.'],
+            ['Es ist ___. (frío)', 'kalt', 'Hace frío.'],
+            ['Es ist ___. (calor)', ['heiß', 'warm'], 'Hace calor.'],
+            ['Es ist ___. (viento)', 'windig', 'Hace viento.'],
+            ['Es ist ___. (nublado)', 'bewölkt', 'Está nublado.'],
+          ]) },
+        { title: 'Perfekt mit haben · El pasado (1)', instr: 'Escribe el participio.', type: 'gap', shuffle: true,
+          items: G([
+            ['Ich habe Pizza ___. (essen)', 'gegessen', 'He comido pizza.'],
+            ['Wir haben Fußball ___. (spielen)', 'gespielt', 'Hemos jugado al fútbol.'],
+            ['Hast du das Buch ___? (lesen)', 'gelesen', '¿Has leído el libro?'],
+            ['Er hat viel ___. (arbeiten)', 'gearbeitet', 'Él ha trabajado mucho.'],
+            ['Ich habe ein Hotel ___. (buchen)', 'gebucht', 'He reservado un hotel.'],
+            ['Sie hat viele Fotos ___. (machen)', 'gemacht', 'Ella ha hecho muchas fotos.'],
+            ['Was hast du ___? (kaufen)', 'gekauft', '¿Qué has comprado?'],
+            ['Habt ihr Tee ___? (trinken)', 'getrunken', '¿Habéis bebido té?'],
+          ]) },
+        { title: 'haben oder sein? · El pasado (2)', instr: 'Con verbos de movimiento o cambio se usa sein.', type: 'choice', shuffle: true,
+          opts: ['habe', 'bin'],
+          items: C([
+            ['Ich ___ nach Berlin gefahren.', 'bin', 'He ido a Berlín (en coche/tren).'],
+            ['Ich ___ ein Museum besucht.', 'habe', 'He visitado un museo.'],
+            ['Ich ___ früh aufgestanden.', 'bin', 'Me he levantado pronto.'],
+            ['Ich ___ im Hotel geschlafen.', 'habe', 'He dormido en el hotel.'],
+            ['Ich ___ nach Mallorca geflogen.', 'bin', 'He volado a Mallorca.'],
+            ['Ich ___ Postkarten geschrieben.', 'habe', 'He escrito postales.'],
+            ['Ich ___ zu Hause geblieben.', 'bin', 'Me he quedado en casa.'],
+            ['Ich ___ in den Bergen gewandert.', 'bin', 'He hecho senderismo en la montaña.'],
+          ]) },
+        { title: 'war und hatte · Era / tenía', instr: 'Completa con war, waren, hatte, hatten…', type: 'gap', shuffle: true,
+          items: G([
+            ['Gestern ___ ich in München. (estuve)', 'war', 'Ayer estuve en Múnich.'],
+            ['Wie ___ der Urlaub? (fue)', 'war', '¿Qué tal fueron las vacaciones?'],
+            ['Das Wetter ___ schön. (fue)', 'war', 'Hizo buen tiempo.'],
+            ['Die Hotels ___ teuer. (eran)', 'waren', 'Los hoteles eran caros.'],
+            ['Wir ___ viel Spaß. (tuvimos)', 'hatten', 'Nos lo pasamos muy bien.'],
+            ['___ du Zeit? (tenías)', 'Hattest', '¿Tenías tiempo?'],
+          ]) },
+        { title: 'Im Hotel · En el hotel', instr: 'Completa el diálogo.', type: 'gap',
+          items: G([
+            ['Guten Tag, ich habe ein Zimmer ___. (reservado)', 'reserviert', 'Buenos días, he reservado una habitación.'],
+            ['Ein ___ für zwei Personen. (habitación doble)', 'Doppelzimmer', 'Una habitación doble para dos personas.'],
+            ['Ist das Frühstück ___? (incluido)', 'inklusive', '¿El desayuno está incluido?'],
+            ['Wann gibt es ___? (desayuno)', 'Frühstück', '¿A qué hora es el desayuno?'],
+            ['Hier ist Ihr ___. (llave)', 'Schlüssel', 'Aquí tiene su llave.'],
+          ]) },
+        { title: '🎧 Was hörst du? · ¿Qué oyes?', instr: '🔊 Escucha y elige qué significa.', type: 'choice', shuffle: true,
+          items: H([
+            ['Es regnet.', 'Llueve.', ['Llueve.', 'Nieva.', 'Hace sol.']], ['Die Sonne scheint.', 'Hace sol.', ['Hace sol.', 'Hace frío.', 'Hay niebla.']],
+            ['der Koffer', 'maleta', ['maleta', 'billete', 'coche']], ['der Flughafen', 'aeropuerto', ['aeropuerto', 'puerto', 'estación']],
+            ['das Meer', 'mar', ['mar', 'lago', 'río']], ['der Strand', 'playa', ['playa', 'calle', 'montaña']],
+            ['Es ist kalt.', 'Hace frío.', ['Hace frío.', 'Hace calor.', 'Llueve.']], ['der Urlaub', 'vacaciones', ['vacaciones', 'viaje de trabajo', 'fiesta']],
+          ]) },
+    ]},
+    ];
+
+    LESSONS.forEach(l => Object.assign(l, UNITS.find(u => u.id === l.id)));
+
+    // ===== INDEX =====
+    const TYPES = { listen: '🔊 Escuchar', choice: '☑️ Elegir', gap: '✍️ Escribir' };
+    const exType = ex => /🔊/.test(ex.instr) ? 'listen' : ex.type === 'gap' ? 'gap' : 'choice';
+    const fold = t => String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss').replace(/[’‘´`]/g, "'");
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const ENTRIES = [];
+    function buildEntries() {
+        LESSONS.forEach(l => l.ex.forEach((ex, i) => {
+            let words = '';
+            if (Array.isArray(ex.items)) words = ex.items.map(it => [it.q, it.t, it.a, it.say].flat().filter(Boolean).join(' ')).join(' ') + ' ' + ex.items.map(it => it.es || '').join(' ');
+            ENTRIES.push({ l, i, ex, type: exType(ex),
+                hayEx: fold([ex.title, ex.instr, TYPES[exType(ex)], words].join(' ')),
+                hayL: fold([l.id, 'leccion lektion ' + l.n, l.title, l.goal, TOPICS[l.id] || ''].join(' ')) });
+        }));
+    }
+    let typeFilter = 'all';
+    const exKey = (l, i) => l.id + '-' + i;
+    function exRow(e) {
+        const done = BEST[exKey(e.l, e.i)] === 'full' ? ' ✅' : '';
+        return `<button class="lb-idx-ex" data-go="${e.l.id}" data-i="${e.i}"><div class="lb-idx-ex-t">${esc(e.ex.title)}${done}<span class="lb-tag">${TYPES[e.type]}</span></div><div class="lb-idx-ex-i">Lección ${e.l.n} · ${esc(e.ex.instr)}</div></button>`;
+    }
+    function renderIndex() {
+        const box = document.getElementById('lbIndex');
+        const q = fold(document.getElementById('lbSearch').value.trim());
+        const pass = e => typeFilter === 'all' || e.type === typeFilter;
+        if (q) {
+            const terms = q.split(/\s+/);
+            let hits = ENTRIES.filter(e => pass(e) && terms.every(t => e.hayEx.includes(t)));
+            if (!hits.length) hits = ENTRIES.filter(e => pass(e) && terms.every(t => (e.hayEx + ' ' + e.hayL).includes(t)));
+            box.innerHTML = `<div class="lb-res-head">${hits.length} ejercicio${hits.length === 1 ? '' : 's'} encontrado${hits.length === 1 ? '' : 's'}</div>` +
+                (hits.length ? `<div class="lb-idx-lesson">${hits.map(exRow).join('')}</div>` : '<div class="lb-idx-desc" style="padding-left:0">Prueba con otra palabra (en alemán o en español).</div>');
+        } else {
+            box.innerHTML = `<div class="lb-idx-group">Nivel A1</div>` + UNITS.map(u => {
+                const l = LESSONS.find(x => x.id === u.id);
+                const head = `<span class="lb-idx-id">${u.n}</span><span class="lb-idx-name">${esc(u.title)}</span>`;
+                if (!l) return `<div class="lb-idx-lesson lb-soon"><div class="lb-sum">${head}<span class="lb-idx-prog">pronto</span></div></div>`;
+                const es = ENTRIES.filter(e => e.l === l && pass(e));
+                const done = l.ex.filter((x, i) => BEST[exKey(l, i)] === 'full').length;
+                return `<details class="lb-idx-lesson"><summary class="lb-sum">${head}<span class="lb-idx-prog">${done}/${l.ex.length}</span></summary>` +
+                    `<div class="lb-idx-desc">${esc(u.goal)}<br><span style="opacity:.75">${esc(TOPICS[u.id] || '')}</span></div>` +
+                    `<button class="lb-btn lb-idx-open" data-go="${l.id}">Abrir toda la lección →</button>` + es.map(exRow).join('') + '</details>';
+            }).join('');
+        }
+        box.querySelectorAll('[data-go]').forEach(b => b.onclick = () => goTo(b.dataset.go, b.dataset.i));
+    }
+    function showIndex(on) {
+        document.getElementById('lbIndex').style.display = on ? '' : 'none';
+        document.getElementById('lbIndexBtn').textContent = on ? '✕ Cerrar índice' : '📑 Índice';
+        if (on) renderIndex();
+    }
+    function goTo(id, i) {
+        showIndex(false);
+        document.getElementById('lbSearch').value = '';
+        openLesson(id, i === undefined);
+        if (i !== undefined) {
+            const card = document.querySelector(`#lbLessonBody .lb-card[data-i="${i}"]`);
+            if (card) {
+                window.scrollTo({ top: card.getBoundingClientRect().top + window.pageYOffset - 16, behavior: 'smooth' });
+                card.classList.add('lb-flash'); setTimeout(() => card.classList.remove('lb-flash'), 1800);
+            }
+        }
+    }
+    function initIndex() {
+        buildEntries();
+        const f = document.getElementById('lbFilters');
+        f.innerHTML = [['all', 'Tous'], ...Object.entries(TYPES)].map(([k, v]) => `<button class="lb-filter ${k === typeFilter ? 'on' : ''}" data-f="${k}">${v}</button>`).join('');
+        f.querySelectorAll('[data-f]').forEach(b => b.onclick = () => {
+            typeFilter = b.dataset.f;
+            f.querySelectorAll('[data-f]').forEach(x => x.classList.toggle('on', x === b));
+            showIndex(true);
+        });
+        document.getElementById('lbIndexBtn').onclick = () => showIndex(document.getElementById('lbIndex').style.display === 'none');
+        document.getElementById('lbSearch').addEventListener('input', () => showIndex(true));
+    }
+
+    // ===== MOTEUR =====
+    let BEST = {};
+    try { BEST = JSON.parse(localStorage.getItem('deutsch-best') || '{}'); } catch (e) {}
+    const saveBest = () => { try { localStorage.setItem('deutsch-best', JSON.stringify(BEST)); } catch (e) {} };
+    let curLesson = 'U1';
+    try { curLesson = localStorage.getItem('deutsch-lesson') || 'U1'; } catch (e) {}
+    if (!LESSONS.find(l => l.id === curLesson)) curLesson = 'U1';
+
+    let voice = null;
+    function pickVoice() {
+        try { const v = speechSynthesis.getVoices(); voice = v.find(x => /^de-DE/i.test(x.lang)) || v.find(x => /^de/i.test(x.lang)) || null; } catch (e) {}
+    }
+    try { pickVoice(); speechSynthesis.addEventListener('voiceschanged', pickVoice); } catch (e) {}
+    function speak(t) {
+        try {
+            speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(t);
+            u.lang = 'de-DE'; u.rate = 0.85; if (voice) u.voice = voice;
+            speechSynthesis.speak(u);
+        } catch (e) { alert('Tu navegador no puede leer en voz alta.'); }
+    }
+
+    const norm = s => String(s).toLowerCase().replace(/[’‘`´]/g, "'").replace(/\s*'\s*/g, "'")
+        .replace(/[.!?,;:—–]+$/, '').replace(/^[—–-]+/, '').replace(/\s+/g, ' ').trim();
+    const sayBtn = t => `<button class="lb-say" data-say="${esc(t)}" title="Escuchar">🔊</button>`;
+
+    function renderChips() {
+        document.getElementById('lbLessonChips').innerHTML = LESSONS.map(l => {
+            const done = l.ex.filter((x, i) => BEST[exKey(l, i)] === 'full').length;
+            return `<button class="lb-chip ${l.id === curLesson ? 'on' : ''}" data-lesson="${l.id}"><span>Lektion ${l.n}</span><span class="lb-chip-n"> · ${done}/${l.ex.length}</span></button>`;
+        }).join('');
+        document.querySelectorAll('#lbLessonChips [data-lesson]').forEach(b => b.onclick = () => openLesson(b.dataset.lesson, true));
+    }
+
+    function openLesson(id, scroll) {
+        curLesson = id;
+        try { localStorage.setItem('deutsch-lesson', id); } catch (e) {}
+        const l = LESSONS.find(x => x.id === id);
+        const body = document.getElementById('lbLessonBody');
+        body.innerHTML = `<div class="lb-lesson-head"><div class="lb-lesson-title">${l.n} · ${esc(l.title)}</div><div class="lb-lesson-sub">Lección ${l.n} · ${esc(l.goal)}</div><button class="lb-back" type="button">📑 Ver el índice</button><button class="lb-back lb-print-link" type="button" onclick="lbPrint()">🖨️ Imprimir esta lección</button></div>`;
+        body.querySelector('.lb-back').onclick = () => { showIndex(true); window.scrollTo({ top: document.getElementById('tab-livre').getBoundingClientRect().top + window.pageYOffset - 10, behavior: 'smooth' }); };
+        l.ex.forEach((ex, i) => { const c = document.createElement('div'); c.className = 'lb-card'; c.dataset.i = i; body.appendChild(c); renderCard(c, l, i); });
+        renderChips();
+        if (scroll) window.scrollTo({ top: body.getBoundingClientRect().top + window.pageYOffset - 20, behavior: 'smooth' });
+    }
+
+    // ===== TRADUCCIÓN AL ESPAÑOL DE CADA PREGUNTA (sin la respuesta) =====
+    function qEs(l, i, j) {
+        const ex = l.ex[i], it = typeof ex.items === 'function' ? null : ex.items[j];
+        if (!it || (ex.type === 'gap' && it.t.trim() === '___') || (ex.type === 'choice' && (!it.q || it.q.trim().length < 2))) return '';
+        return it.es || '';
+    }
+    function renderCard(card, lesson, idx) {
+        const ex = lesson.ex[idx], key = exKey(lesson, idx);
+        let items = typeof ex.items === 'function' ? ex.items() : ex.items.slice();
+        if (ex.shuffle) items = sh(items);
+        const st = { right: 0, answered: 0, n: items.length };
+        const mark = BEST[key] === 'full' ? ' ✅' : '';
+        let html = `<div class="lb-card-head"><span class="lb-card-title">${esc(ex.title)}${mark}</span><span class="lb-score">0 / ${items.length}</span></div><div class="lb-instr">${esc(ex.instr)}</div>`;
+        items.forEach((it, j) => {
+            html += `<div class="lb-item" data-j="${j}">`;
+            const oj = typeof ex.items === 'function' ? -1 : ex.items.indexOf(it);
+            const es = oj >= 0 ? qEs(lesson, idx, oj) : '';
+            const esHtml = es ? `<span class="lb-qes">${esc(es)}</span>` : '';
+            if (ex.type === 'choice') {
+                const opts = it.opts || ex.opts;
+                html += (it.say ? sayBtn(it.say) : '') + `<span class="lb-q">${it.q ? esc(it.q) : 'Escucha…'}</span>` + esHtml;
+                html += `<div class="lb-opts">${opts.map(o => `<button class="lb-opt" data-o="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;
+            } else {
+                const w = Math.max(70, Math.min(280, Math.max(...it.a.map(a => a.length)) * 10 + 24));
+                const parts = it.t.split('___');
+                html += (it.say ? sayBtn(it.say) : '') + esc(parts[0]) +
+                    `<input class="lb-gap" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="width:${w}px">` +
+                    esc(parts[1] || '') + '<span class="lb-fix"></span>' + esHtml;
+            }
+            html += '</div>';
+        });
+        html += '<div class="lb-actions">';
+        if (ex.type === 'gap') html += '<button class="lb-btn lb-primary lb-chk">Comprobar</button><button class="lb-btn lb-sol">Soluciones</button>';
+        html += '<button class="lb-btn lb-rst">Empezar de nuevo</button></div>';
+        card.innerHTML = html;
+
+        const scoreEl = card.querySelector('.lb-score');
+        const update = () => {
+            scoreEl.textContent = `${st.right} / ${st.n}`;
+            const finished = st.answered === st.n;
+            scoreEl.classList.toggle('done', finished && st.right === st.n);
+            if (finished) {
+                const prev = BEST[key];
+                if (st.right === st.n) BEST[key] = 'full'; else if (prev !== 'full') BEST[key] = 'part';
+                if (BEST[key] !== prev) { saveBest(); renderChips(); }
+            }
+        };
+        card.querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
+        card.querySelector('.lb-rst').onclick = () => renderCard(card, lesson, idx);
+
+        if (ex.type === 'choice') {
+            card.querySelectorAll('.lb-item').forEach(row => {
+                const it = items[+row.dataset.j];
+                const btns = row.querySelectorAll('.lb-opt');
+                btns.forEach(b => b.onclick = () => {
+                    btns.forEach(x => { x.disabled = true; if (x.dataset.o === it.a) x.classList.add('ok'); });
+                    const ok = b.dataset.o === it.a;
+                    if (!ok) b.classList.add('bad');
+                    if (it.say && !it.q) row.querySelector('.lb-q').textContent = it.say;
+                    st.answered++; if (ok) st.right++;
+                    update();
+                });
+            });
+        } else {
+            const inputs = [...card.querySelectorAll('.lb-gap')];
+            const isOk = (inp, j) => items[j].a.some(a => norm(a) === norm(inp.value));
+            const accentOnly = (inp, j) => items[j].a.find(a => fold(norm(a)) === fold(norm(inp.value)));
+            const mark1 = (inp, j, showSol) => {
+                const ok = isOk(inp, j), fix = inp.parentElement.querySelector('.lb-fix');
+                inp.classList.toggle('ok', ok); inp.classList.toggle('bad', !ok);
+                const acc = !ok && inp.value.trim() && accentOnly(inp, j);
+                fix.textContent = ok ? '' : acc ? "⚠ Cuidado con la diéresis o la ß: " + acc : showSol ? '→ ' + items[j].a.join(' / ') : '';
+                return ok;
+            };
+            const check = () => {
+                st.right = 0; st.answered = st.n;
+                inputs.forEach((inp, j) => { if (mark1(inp, j, false)) st.right++; });
+                update();
+            };
+            card.querySelector('.lb-chk').onclick = check;
+            card.querySelector('.lb-sol').onclick = () => inputs.forEach((inp, j) => mark1(inp, j, true));
+            inputs.forEach((inp, j) => inp.addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); if (inputs[j + 1]) inputs[j + 1].focus(); else check(); }
+            }));
+        }
+    }
+
+    window.lbPrint = function () {
+        showIndex(false);
+        document.getElementById('lbSearch').value = '';
+        setTimeout(() => window.print(), 50);
+    };
+    initIndex();
+    openLesson(curLesson, false);
+})();
+</script>
+
+</body>
+</html>
